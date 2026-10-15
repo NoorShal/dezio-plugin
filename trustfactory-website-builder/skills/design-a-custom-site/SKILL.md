@@ -124,14 +124,16 @@ push refuses a `holds` that names a field the list lacks or the page doesn't sho
 ## What markup may hold
 
 Elements: `section header footer nav article aside div span p h2–h6 ul ol li dl dt dd blockquote address strong em b i
-small s sub sup br hr figure figcaption img a details summary label input table caption thead tbody tfoot tr th td`,
-and SVG icons from `svg g path circle ellipse rect line polyline polygon`. Attributes: `class id role title lang dir
-hidden tabindex aria-*`, plus each element's own (`href` on `a`, `type name value checked` on `input`, with `type`
-`radio` or `checkbox` only, `open` on `details`, `colspan rowspan scope` on table cells, SVG geometry and paint).
+small s sub sup br hr figure figcaption img a details summary label input button table caption thead tbody tfoot tr th
+td`, and SVG icons from `svg g path circle ellipse rect line polyline polygon`. Attributes: `class id role title lang
+dir hidden tabindex aria-*`, plus each element's own (`href` on `a`, `type name value checked` on `input`, with `type`
+`radio`, `checkbox` or `range`, and `min max step` on a range, `type="button"` on `button`, `open` on `details`,
+`colspan rowspan scope` on table cells, SVG geometry and paint), and `data-script` where the section's own script acts.
 
-Links (`href`) go to `/…`, `#…`, `tel:`, `mailto:` or `https://`. Nothing runs or loads: no `<script>`, `<style>`,
-`<iframe>`, `<form>`, event handlers, `style` attributes or `javascript:`. Tabs, accordions and menus that open are
-made with `details`/`summary` or `input` and `:checked` in the stylesheet.
+Links (`href`) go to `/…`, `#…`, `tel:`, `mailto:` or `https://`. Nothing in the markup runs or loads: no `<script>`,
+`<style>`, `<iframe>`, `<form>`, event handlers, `style` attributes or `javascript:`. Tabs, accordions and menus that
+open are made with `details`/`summary` or `input` and `:checked` in the stylesheet. What CSS can't do, a section
+type's own script does: `scripts.md` beside this file.
 
 ## The stylesheet
 
@@ -189,10 +191,11 @@ approved it. Never tell them a licence allows it unless they showed you the lice
 `design.set` with `font_pair`) and draw with `var(--site-font-heading)` and `var(--site-font-body)`, in a type scale of
 the design's own.
 
-**Sections:** the design draws its pages with section types of its own. Of the template's, use only those that do
+**Sections:** the design draws its pages with section types of its own. Of the platform's, use only those that do
 what a design can't: the contact form (`contact_form`), the job application form (`application_form`), the Google
-reviews (`google_reviews`), and the legal pages, which come with the set-up. Restyle them through the site's
-variables above and the design's own rules. Questions and services a design shows in its own sections reach search
+reviews (`google_reviews`), a job's pictures before and after (`before_after`), and the legal pages, which come with
+the set-up. Restyle them through the site's variables above and the design's own rules: the before-and-after by its
+classes `before-after-frame`, `before-after-label`, `before-after-divider` and `--position`. Questions and services a design shows in its own sections reach search
 engines through `holds`.
 
 The legal links in the footer and the consent bar must stay visible and readable on every page, at every width: the

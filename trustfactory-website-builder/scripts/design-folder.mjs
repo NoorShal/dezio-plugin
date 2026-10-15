@@ -4,7 +4,7 @@
 import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
 /** The online Studio, which every setting falls back to. */
@@ -108,7 +108,15 @@ async function readDesign(dir) {
       throw new Error(`design/sections/${name} names the type "${String(definition.type)}"; name it "${type}".`);
     }
     const markup = await read(join(sections, `${type}.html`));
-    sectionTypes.push({ definition, markup, ...(holds === undefined ? {} : { holds }) });
+    // Its own script, where the type has one: design/sections/<type>.js.
+    const scriptFile = join(sections, `${type}.js`);
+    const script = existsSync(scriptFile) ? await read(scriptFile) : undefined;
+    sectionTypes.push({
+      definition,
+      markup,
+      ...(holds === undefined ? {} : { holds }),
+      ...(script === undefined ? {} : { script }),
+    });
   }
   return {
     header: await read(join(design, FRAME.header)),
@@ -119,16 +127,22 @@ async function readDesign(dir) {
   };
 }
 
+/**
+ * Writes the design's files as the Studio holds them; a type's script file goes where the Studio's type has none, so a
+ * later push never brings back a script the design no longer holds.
+ */
 async function writeDesign(dir, source) {
   const sections = join(dir, 'design', 'sections');
   await mkdir(sections, { recursive: true });
   for (const [part, file] of Object.entries(FRAME)) {
     await writeFile(join(dir, 'design', file), source[part]);
   }
-  for (const { definition, markup, holds } of source.section_types) {
+  for (const { definition, markup, holds, script } of source.section_types) {
     const file = holds === undefined ? definition : { ...definition, holds };
     await writeFile(join(sections, `${definition.type}.json`), `${JSON.stringify(file, null, 2)}\n`);
     await writeFile(join(sections, `${definition.type}.html`), markup);
+    const scriptFile = join(sections, `${definition.type}.js`);
+    await (script === undefined ? rm(scriptFile, { force: true }) : writeFile(scriptFile, script));
   }
 }
 

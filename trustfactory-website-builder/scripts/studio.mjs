@@ -18,7 +18,8 @@ const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
 The folder (default: the current one) holds studio.json, which names the site, and design/:
   design/header.html, design/footer.html, design/stylesheet.css,
   design/sections/<type>.json (the section type, and under "holds" the questions or services it lists, where it
-  does) beside design/sections/<type>.html (its markup),
+  does) beside design/sections/<type>.html (its markup) and, where it moves, design/sections/<type>.js (its own
+  script, export function attach(root), given each element its markup marks data-script="<type>"),
   design/fonts/<name>.woff2, the font files the stylesheet's font faces name, as url("fonts/<name>.woff2"). A push
   adds a font file new to the site only once you approved it in the Studio, at the link the push gives: approve it
   only if the font's licence allows its use on websites. studio.json keeps the approvals still open.

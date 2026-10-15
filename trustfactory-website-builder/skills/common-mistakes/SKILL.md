@@ -21,8 +21,12 @@ The refusal names the file and line. The usual causes:
   the list's own fields, and draw both, as search engines take only what the page shows.
 - **`<h1>`**, or two `data-heading` in one section: a section has one heading of its own, and the page's `<h1>` is the
   opening section's.
-- **`style="…"`, `<script>`, `<style>`, `onclick`, `<iframe>`, `<form>`**: a design draws and never runs or loads.
-  Styles go in the stylesheet by class; forms are the template's contact form section.
+- **`style="…"`, `<script>`, `<style>`, `onclick`, `<iframe>`, `<form>`**: the markup draws and never runs or loads.
+  Styles go in the stylesheet by class; forms are the template's contact form section; what must move is the section
+  type's own script (`design-a-custom-site`, `scripts.md`).
+- **A script refused:** the refusal names `design/sections/<type>.js`, the line and the name or member it may not use.
+  `scripts.md` lists what a script may use and what to write instead. A script needs the mark `data-script="<type>"`
+  in its type's markup, and a mark needs the script.
 - **An `<img>` with `src`**: pictures come from an `image` field (`data-image`), uploaded to the site's library.
 - **`url(…)` or `@import` in the stylesheet**: backgrounds are `<img>` from a field, styled to cover. A font face is the
   one place for a `url(…)`, naming a file of `design/fonts/` as `url("fonts/<file>.woff2") format("woff2")`.

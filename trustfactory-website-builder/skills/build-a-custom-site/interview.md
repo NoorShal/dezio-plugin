@@ -7,6 +7,9 @@ Where an answer is a choice (the legal form, which pages, the style), ask with t
 where it has one, such as Claude Code's `AskUserQuestion`: up to four choices, any other answer typed. Free text is
 asked in plain chat.
 
+Every site is a real business's. Ask for its facts; where one isn't given, ask again later or mark it `[FEHLT: …]`
+where a page needs it.
+
 ## First: is there a website?
 
 Ask whether the business has a website now. If it has, offer to read it: `template_sites-write` with `prefill.start`.
@@ -47,5 +50,5 @@ stops.
 - `core-read` with `business_details.get`: say what `missing_for_publish` still lists, in plain words ("the site still
   needs your phone number before it can go live"). A site can be built with gaps, but not published.
 - Ask: "Anything else the site should say or show?"
-- The style: offer three directions, one line each, to pick one, or offer to show all three first.
-  `local-business-design` then plans the chosen one.
+- The style: offer three directions, one line each, and the person picks one. `local-business-design` then plans the
+  chosen one.

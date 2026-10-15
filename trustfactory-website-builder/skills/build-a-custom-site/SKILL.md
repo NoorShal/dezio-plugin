@@ -26,6 +26,8 @@ business that isn't on it sets none, and loses nothing but the trade's checks on
   words it stands in. Set only what the client confirms: the details with `core-site-update` (`business_details.set`).
 - `core-read` with `business_details.get` shows the facts the site holds, and what the imprint still needs. A page may
   claim only what is there; anything else is marked `[FEHLT: …]` (`copy-for-local-business`).
+- Every site is a real business's. Ask for its facts; where one isn't given, ask again later or mark it
+  `[FEHLT: …]` where a page needs it.
 
 ## 2. The home page, until the client approves it
 
@@ -75,9 +77,11 @@ one on.
   reviews; the template's `google_reviews` section shows them. Never write a review by hand.
 - **Blog:** `blog-write` (`post.create`, `post.save`, `post.publish`). A post goes live on its own when it is
   published.
+- **Before and after:** the platform's `before_after` section, two pictures of a job the visitor divides by dragging.
+  Never write a slider of the design's own for it.
 
-These are the only template sections a custom site uses, beside the legal pages: they do what a design can't (send
-a form, fetch the Google reviews). They take the design's look through its stylesheet (`design-a-custom-site`).
+These are the only platform sections a custom site uses, beside the legal pages: they do what a design can't (send
+a form, fetch the Google reviews, move by the platform's own script). They take the design's look through its stylesheet (`design-a-custom-site`).
 
 ## 5. Checks, then publishing
 
