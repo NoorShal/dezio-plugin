@@ -2,11 +2,12 @@
 // Claude Code's UserPromptSubmit hook: keeps each prompt a designer gives inside a custom site's design folder with
 // that site in Website Studio, with its session. It runs on its own after the prompt is sent and never stops one. A
 // prompt given before the folder is linked to a site, or without the key, waits in the plugin's data folder until
-// design_init or design_push sends it; one the Studio refuses is simply not kept.
+// design_init or design_push sends it; one the Studio refuses is simply not kept. A turn Claude Code starts itself,
+// such as a background task's notice, is no prompt of the designer's and is left out.
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-import { keepPrompt } from './prompts.mjs';
+import { keepPrompt, typedPrompt } from './prompts.mjs';
 
 /** The site of the design folder the prompt was given in, from its studio.json; none outside one. */
 function siteOf(cwd) {
@@ -28,7 +29,7 @@ async function main() {
     input += chunk;
   }
   const { session_id: session, prompt, cwd } = JSON.parse(input);
-  if (typeof session !== 'string' || typeof cwd !== 'string' || typeof prompt !== 'string' || prompt.trim() === '') {
+  if (typeof session !== 'string' || typeof cwd !== 'string' || !typedPrompt(prompt)) {
     return;
   }
   const site = siteOf(cwd);

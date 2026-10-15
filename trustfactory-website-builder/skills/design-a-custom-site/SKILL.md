@@ -205,7 +205,10 @@ reviews (`google_reviews`), a job's pictures before and after (`before_after`), 
 (`video`), whose player loads only once the visitor agrees, and the legal pages, which come with the set-up. Restyle
 them through the site's variables above and the design's own rules: the before-and-after by its classes
 `before-after-frame`, `before-after-label`, `before-after-divider` and `--position`; the video by `video-frame`, its
-field of sixteen by nine, and `video-note`, the card on it until the player loads. Questions and services a design
+field of sixteen by nine, and `video-note`, the card on it until the player loads. The pages the site draws on its
+own, the one a sender lands on once a form or an application is sent and the page not found, stand between the
+design's header and footer as `<main class="notice">`: a heading, a line or two and the way home (`.button`), laid
+out plainly in the page's column; restyle them by `.notice`. Questions and services a design
 shows in its own sections reach search engines through `holds`.
 
 **The contact block** (`contact_form`) takes the design's layout through these classes: `contact-block` (the grid;

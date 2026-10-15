@@ -11,6 +11,19 @@ const KEPT_MS = 24 * 60 * 60 * 1000;
 /** The most one session's waiting prompts fill, so a long session outside any design folder keeps no more. */
 const MOST_BYTES = 1024 * 1024;
 
+/**
+ * The blocks the turns Claude Code starts itself open with: a background task's or agent's notice, an agent's report,
+ * and another session's message. Claude Code runs the prompt hook on such turns too, and gives it nothing that tells
+ * them from a typed prompt (its hooks reference, "UserPromptSubmit input"), so they are told by the block they open
+ * with. None is the designer's, and they carry the computer's own paths.
+ */
+const STARTED_BY_CLAUDE_CODE = /^\s*<(?:task-notification|agent-message|cross-session-message)[\s>]/;
+
+/** Whether a prompt is one a person gave, not a turn Claude Code started itself. */
+export function typedPrompt(prompt) {
+  return typeof prompt === 'string' && prompt.trim() !== '' && !STARTED_BY_CLAUDE_CODE.test(prompt);
+}
+
 /** Where the waiting prompts are kept: the plugin's data folder, which Claude Code gives its hooks and servers. */
 function waitingFolder() {
   const data = process.env.CLAUDE_PLUGIN_DATA;
@@ -60,7 +73,8 @@ function within(path, folder) {
 /**
  * Sends each kept prompt given in the design folder, within it, or in the folder it was made in, in the order given,
  * and forgets it: how many were sent. Prompts given higher up, such as in the home folder, stay out, as they may be
- * about anything. One the Studio doesn't take now stays for a later push.
+ * about anything. One the Studio doesn't take now stays for a later push; a turn Claude Code started itself is
+ * forgotten.
  */
 export async function sendKeptPrompts(dir, send) {
   const folder = waitingFolder();
@@ -72,6 +86,9 @@ export async function sendKeptPrompts(dir, send) {
     const left = [];
     for (const line of (await readFile(file, 'utf8')).split('\n').filter((each) => each !== '')) {
       const kept = JSON.parse(line);
+      if (!typedPrompt(kept.prompt)) {
+        continue;
+      }
       if (typeof kept.cwd !== 'string' || !(within(kept.cwd, dir) || kept.cwd === dirname(dir))) {
         left.push(line);
         continue;
