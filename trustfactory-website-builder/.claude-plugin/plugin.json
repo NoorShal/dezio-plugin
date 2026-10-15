@@ -1,6 +1,6 @@
 {
   "name": "trustfactory-website-builder",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Build custom websites on Website Studio from Claude Code: the Studio's tools, the design guide, and a design folder pushed to a site's drafts.",
   "author": {
     "name": "Trustfactory"

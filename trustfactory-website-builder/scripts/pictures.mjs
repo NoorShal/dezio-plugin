@@ -25,10 +25,10 @@ function detailsOf(entry) {
   };
 }
 
-/** Why a step failed, in one line: what the Studio said, with each thing it named. */
+/** Why a step failed, in one line: what the Studio said, with each thing it named and the field it named it at. */
 function why(error) {
   if (error instanceof Refused) {
-    return [error.message, ...(error.problem?.errors ?? []).map(({ detail }) => detail)].join(' ');
+    return [error.message, ...error.named()].join(' ');
   }
   return error instanceof Error ? error.message : String(error);
 }

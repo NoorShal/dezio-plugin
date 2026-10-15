@@ -24,7 +24,8 @@ design/fonts/<name>.woff2   a font file of the brand's, which the stylesheet's f
 2. Fix every refusal and push again before going on: a refused push keeps the design saved before it.
 3. Write the pages with `content-write`, using the site's own section types and the template's (forms, legal pages).
 4. Look at the result in the Studio's preview (the address `design_push` answers), reloaded by hand. Nothing goes
-   public until the site is published.
+   public until the site is published. Judge motion there or through a share link: the Studio's editor runs no
+   scripts, so it shows each section still.
 
 In a terminal, `node ${CLAUDE_PLUGIN_ROOT}/scripts/studio.mjs dev` in the folder pushes on every save instead; it reads
 the key from `TF_STUDIO_KEY`.
@@ -90,6 +91,13 @@ and a `label`), `image`, and `repeater` (with `min_items`, `max_items` and its i
 a type's fields change, the push raises its version and moves every page's sections of it to the new fields, keeping
 each value whose field is still there and still takes it.
 
+Keys, the type's own and each field's and option's, are lowercase letters, digits and underscores, starting with a
+letter. The platform keeps 29 names for its own fields and requests, so a key takes another: `id`, `site_id`,
+`type_id`, `category_id`, `slug`, `name`, `status`, `path`, `values`, `language`, `translations`, `locale`,
+`created_at`, `updated_at`, `modules`, `operation`, `limit`, `after`, `sort`, `q`, `response_format`,
+`idempotency_key`, `confirm_token`, `approval_id`, `organisation_id`, `core`, `constructor`, `prototype` and
+`__proto__`. A field that holds a person's or a service's name is `title` or `full_name`, for instance.
+
 `variants` (optional) offers two or more layouts of the same fields: `{ "default": "left", "options": [{ "key":
 "left", "label": …, "description": … }, …] }`. The section's top element then carries the class `variant-<key>`, and
 `data-variant="<key>"` draws an element only in that variant.
@@ -136,7 +144,8 @@ Links (`href`) go to `/…`, `#…`, `tel:`, `mailto:` or `https://`. The site r
 own pages are linked as `/…`, and `https://` leads to other services, such as social profiles, maps and videos. Nothing
 in the markup runs or loads: no `<script>`, `<style>`, `<iframe>`, `<form>`, event handlers, `style` attributes or
 `javascript:`. Tabs, accordions and menus that open are made with `details`/`summary` or `input` and `:checked` in the
-stylesheet. What CSS can't do, a section type's own script does: `scripts.md` beside this file.
+stylesheet. What CSS can't do, a section type's own script does: `scripts.md` beside this file, which also says how a
+section moves as it scrolls into view.
 
 ## The stylesheet
 

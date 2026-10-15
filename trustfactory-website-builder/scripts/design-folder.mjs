@@ -14,16 +14,41 @@ const ONLINE = { api: 'https://website-studio-api.vercel.app', admin: 'https://w
 
 const FRAME = { header: 'header.html', footer: 'footer.html', stylesheet: 'stylesheet.css' };
 
-/** A refusal from the Studio, with what it said, each refused file by its line. */
+/** A pointer's steps (RFC 6901), each as the name or the index it says. */
+function stepsOf(pointer) {
+  return pointer
+    .split('/')
+    .slice(1)
+    .map((step) => step.replaceAll('~1', '/').replaceAll('~0', '~'));
+}
+
+/** Where a pointer leads, in words: its steps one after another, such as "details › logo". */
+function pointerWords(pointer) {
+  return stepsOf(pointer).join(' › ');
+}
+
+/** A refusal from the Studio, with what it said, each thing it named by the file or the field its pointer leads to. */
 export class Refused extends Error {
-  constructor(status, problem) {
+  constructor(status, problem, placeOf = pointerWords) {
     super(problem?.detail ?? problem?.title ?? `The Studio answered ${String(status)}.`);
     this.problem = problem;
+    this.placeOf = placeOf;
   }
 
-  /** The refusal as lines a person reads: what the Studio said, then each file and line to change. */
+  /** Each thing the Studio named, in a line: where it is, then what to change there. */
+  named() {
+    return (this.problem?.errors ?? []).map(({ pointer, detail }) => {
+      // The design's own checks name the file and its line in their words already.
+      if (typeof pointer !== 'string' || pointer === '' || String(detail).startsWith('design/')) {
+        return String(detail);
+      }
+      return `${this.placeOf(pointer)}: ${String(detail)}`;
+    });
+  }
+
+  /** The refusal as lines a person reads: what the Studio said, then each file and line or field to change. */
   lines() {
-    return [`Refused: ${this.message}`, ...(this.problem?.errors ?? []).map(({ detail }) => `  ${detail}`)];
+    return [`Refused: ${this.message}`, ...this.named().map((line) => `  ${line}`)];
   }
 }
 
@@ -38,8 +63,11 @@ export function settings() {
   return { key, api: process.env.TF_STUDIO_API || ONLINE.api, admin: process.env.TF_STUDIO_ADMIN || ONLINE.admin };
 }
 
-/** One request to the site's API with the agent key: its answer, a refusal thrown as `Refused`. */
-async function request(site, method, path, body, headers = {}) {
+/**
+ * One request to the site's API with the agent key: its answer, a refusal thrown as `Refused`, which names each thing
+ * by `placeOf` its pointer, where the call knows what the pointer leads into.
+ */
+async function request(site, method, path, body, { headers = {}, placeOf } = {}) {
   const { key, api } = settings();
   const response = await fetch(new URL(`/v1/sites/${encodeURIComponent(site)}/${path}`, api), {
     method,
@@ -52,14 +80,14 @@ async function request(site, method, path, body, headers = {}) {
   });
   const answer = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new Refused(response.status, answer);
+    throw new Refused(response.status, answer, placeOf);
   }
   return answer;
 }
 
 /** One call to the site's API with the agent key: a read's answer, or an action's output. */
-export async function call(site, method, path, body) {
-  const answer = await request(site, method, path, body);
+export async function call(site, method, path, body, placeOf) {
+  const answer = await request(site, method, path, body, { placeOf });
   if (method === 'GET') {
     return answer;
   }
@@ -126,6 +154,56 @@ async function readDesign(dir) {
     stylesheet: await read(join(design, FRAME.stylesheet)),
     section_types: sectionTypes,
     fonts: (await readFonts(dir)).map(({ name, hash }) => ({ name, hash })),
+  };
+}
+
+/** A place within a file's JSON: each step by its name, and a list's item by its key, as a field or an option has. */
+function within(file, value, steps) {
+  const words = [];
+  let at = value;
+  for (const step of steps) {
+    const item = Array.isArray(at) ? at[Number(step)] : at?.[step];
+    if (Array.isArray(at)) {
+      words.push(typeof item?.key === 'string' ? `"${item.key}"` : `#${String(Number(step) + 1)}`);
+    } else {
+      words.push(step);
+    }
+    at = item;
+  }
+  return words.length === 0 ? file : `${file}, ${words.join(' › ')}`;
+}
+
+/**
+ * Where a pointer into a pushed design leads: the folder's file that holds it, and within a section type's JSON the
+ * field by its key, such as `design/sections/offers.json, fields › "name" › key`.
+ */
+function placeInDesign(design) {
+  return (pointer) => {
+    const [part, index, kind, ...rest] = stepsOf(pointer);
+    if (Object.hasOwn(FRAME, part) && index === undefined) {
+      return `design/${FRAME[part]}`;
+    }
+    if (part === 'fonts') {
+      const font = design.fonts[Number(index)];
+      return font === undefined ? 'design/fonts' : `design/fonts/${font.name}`;
+    }
+    const type = part === 'section_types' ? design.section_types[Number(index)] : undefined;
+    if (type === undefined) {
+      return part === 'section_types' ? 'design/sections' : pointerWords(pointer);
+    }
+    const file = `design/sections/${type.definition.type}`;
+    switch (kind) {
+      case 'markup':
+        return `${file}.html`;
+      case 'script':
+        return `${file}.js`;
+      case 'definition':
+        return within(`${file}.json`, type.definition, rest);
+      case 'holds':
+        return within(`${file}.json`, { holds: type.holds }, ['holds', ...rest]);
+      default:
+        return `${file}.json`;
+    }
   };
 }
 
@@ -218,7 +296,7 @@ async function askForFont(site, font, approval) {
     return request(site, 'POST', 'font:add', body);
   }
   try {
-    return await request(site, 'POST', 'font:add', body, { 'approval-id': approval.id });
+    return await request(site, 'POST', 'font:add', body, { headers: { 'approval-id': approval.id } });
   } catch (error) {
     if (error instanceof Refused && error.problem?.code === 'approval_invalid') {
       return request(site, 'POST', 'font:add', body);
@@ -289,7 +367,8 @@ async function addFonts(dir, site) {
 export async function push(dir) {
   const site = await siteOf(dir);
   await addFonts(dir, site);
-  const saved = await call(site, 'POST', 'template_sites/custom_design:set', await readDesign(dir));
+  const design = await readDesign(dir);
+  const saved = await call(site, 'POST', 'template_sites/custom_design:set', design, placeInDesign(design));
   const types = saved.section_types.length === 0 ? 'none' : saved.section_types.join(', ');
   return [
     `Saved at ${new Date().toLocaleTimeString()}. Own section types: ${types}.`,
