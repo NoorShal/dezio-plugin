@@ -1,0 +1,16 @@
+{
+  "name": "trustfactory",
+  "owner": {
+    "name": "Trustfactory"
+  },
+  "metadata": {
+    "description": "Trustfactory's plugins for building websites on Website Studio."
+  },
+  "plugins": [
+    {
+      "name": "trustfactory-website-builder",
+      "source": "./trustfactory-website-builder",
+      "description": "Build custom websites on Website Studio from Claude Code: the Studio's tools, the design guide, and a design folder pushed to a site's drafts."
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+// A custom site's design as a folder of files, pulled from Website Studio and pushed back as the site's draft design:
+// what studio.mjs runs in a terminal and design-server.mjs offers Claude as tools. Plain Node, no packages, so it runs
+// wherever Claude Code does.
+import { Buffer } from 'node:buffer';
+import { createHash } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { basename, join } from 'node:path';
+
+/** The online Studio, which every setting falls back to. */
+const ONLINE = { api: 'https://website-studio-api.vercel.app', admin: 'https://website-studio-admin.vercel.app' };
+
+const FRAME = { header: 'header.html', footer: 'footer.html', stylesheet: 'stylesheet.css' };
+
+/** A refusal from the Studio, with what it said, each refused file by its line. */
+export class Refused extends Error {
+  constructor(status, problem) {
+    super(problem?.detail ?? problem?.title ?? `The Studio answered ${String(status)}.`);
+    this.problem = problem;
+  }
+
+  /** The refusal as lines a person reads: what the Studio said, then each file and line to change. */
+  lines() {
+    return [`Refused: ${this.message}`, ...(this.problem?.errors ?? []).map(({ detail }) => `  ${detail}`)];
+  }
+}
+
+/** The Studio and the agent key, from the environment: TF_STUDIO_KEY, TF_STUDIO_API and TF_STUDIO_ADMIN. */
+function settings() {
+  const key = process.env.TF_STUDIO_KEY;
+  if (key === undefined || key === '') {
+    throw new Error(
+      'No Studio key: install the plugin with your agent key, or set TF_STUDIO_KEY to one made in the Studio.',
+    );
+  }
+  return { key, api: process.env.TF_STUDIO_API || ONLINE.api, admin: process.env.TF_STUDIO_ADMIN || ONLINE.admin };
+}
+
+/** One request to the site's API with the agent key: its answer, a refusal thrown as `Refused`. */
+async function request(site, method, path, body, headers = {}) {
+  const { key, api } = settings();
+  const response = await fetch(new URL(`/v1/sites/${encodeURIComponent(site)}/${path}`, api), {
+    method,
+    headers: {
+      authorization: `Bearer ${key}`,
+      ...(body === undefined ? {} : { 'content-type': 'application/json' }),
+      ...headers,
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+  const answer = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Refused(response.status, answer);
+  }
+  return answer;
+}
+
+/** One call to the site's API with the agent key: a read's answer, or an action's output. */
+async function call(site, method, path, body) {
+  const answer = await request(site, method, path, body);
+  if (method === 'GET') {
+    return answer;
+  }
+  if (answer?.status !== 'done') {
+    throw new Error(`The Studio wants a person's ${String(answer?.status)} first; finish it in the Studio.`);
+  }
+  return answer.output;
+}
+
+async function settingsOf(dir) {
+  const file = join(dir, 'studio.json');
+  if (!existsSync(file)) {
+    throw new Error(`${file} is missing: start the folder with the site's id first.`);
+  }
+  return JSON.parse(await readFile(file, 'utf8'));
+}
+
+async function siteOf(dir) {
+  return (await settingsOf(dir)).site_id;
+}
+
+const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
+
+/** The folder's font files, each by its name, with its bytes and their hash. */
+async function readFonts(dir) {
+  const folder = join(dir, 'design', 'fonts');
+  const names = existsSync(folder) ? (await readdir(folder)).filter((name) => name.endsWith('.woff2')).sort() : [];
+  const fonts = [];
+  for (const name of names) {
+    const bytes = await readFile(join(folder, name));
+    fonts.push({ name, bytes, hash: sha256(bytes) });
+  }
+  return fonts;
+}
+
+/** The folder's design, as the Studio takes it; the section types in their files' order. */
+async function readDesign(dir) {
+  const design = join(dir, 'design');
+  const sections = join(design, 'sections');
+  const read = (file) => readFile(file, 'utf8');
+  const names = existsSync(sections) ? (await readdir(sections)).filter((name) => name.endsWith('.json')).sort() : [];
+  const sectionTypes = [];
+  for (const name of names) {
+    const type = basename(name, '.json');
+    // The file is the section type, with what it holds for search engines, where it says, under "holds".
+    const { holds, ...definition } = JSON.parse(await read(join(sections, name)));
+    if (definition.type !== type) {
+      throw new Error(`design/sections/${name} names the type "${String(definition.type)}"; name it "${type}".`);
+    }
+    const markup = await read(join(sections, `${type}.html`));
+    sectionTypes.push({ definition, markup, ...(holds === undefined ? {} : { holds }) });
+  }
+  return {
+    header: await read(join(design, FRAME.header)),
+    footer: await read(join(design, FRAME.footer)),
+    stylesheet: await read(join(design, FRAME.stylesheet)),
+    section_types: sectionTypes,
+    fonts: (await readFonts(dir)).map(({ name, hash }) => ({ name, hash })),
+  };
+}
+
+async function writeDesign(dir, source) {
+  const sections = join(dir, 'design', 'sections');
+  await mkdir(sections, { recursive: true });
+  for (const [part, file] of Object.entries(FRAME)) {
+    await writeFile(join(dir, 'design', file), source[part]);
+  }
+  for (const { definition, markup, holds } of source.section_types) {
+    const file = holds === undefined ? definition : { ...definition, holds };
+    await writeFile(join(sections, `${definition.type}.json`), `${JSON.stringify(file, null, 2)}\n`);
+    await writeFile(join(sections, `${definition.type}.html`), markup);
+  }
+}
+
+/** One of the site's font files, as it was added. */
+async function fontBytes(site, hash) {
+  const { key, api } = settings();
+  const address = new URL(`/v1/sites/${encodeURIComponent(site)}/fonts/${hash}`, api);
+  const response = await fetch(address, { headers: { authorization: `Bearer ${key}` } });
+  if (!response.ok) {
+    throw new Refused(response.status, await response.json().catch(() => null));
+  }
+  return new Uint8Array(await response.arrayBuffer());
+}
+
+/** The design's font files into design/fonts/, each only where the folder hasn't the same bytes already. */
+async function writeFonts(dir, site, fonts) {
+  const folder = join(dir, 'design', 'fonts');
+  await mkdir(folder, { recursive: true });
+  const here = new Map((await readFonts(dir)).map(({ name, hash }) => [name, hash]));
+  for (const { name, hash } of fonts) {
+    if (here.get(name) !== hash) {
+      await writeFile(join(folder, name), await fontBytes(site, hash));
+    }
+  }
+}
+
+/** Writes the site's design into the folder's `design/` files, its font files too: what it pulled, in words. */
+export async function pull(dir) {
+  const site = await siteOf(dir);
+  const { source } = await call(site, 'GET', 'template_sites/custom_design:get');
+  if (source === null) {
+    throw new Error('The site is no custom site yet: start the folder with its id first.');
+  }
+  await writeDesign(dir, source);
+  await writeFonts(dir, site, source.fonts ?? []);
+  return `Pulled the design of site ${site} into ${join(dir, 'design')}.`;
+}
+
+/**
+ * Makes the site a custom site, with a first design, the legal pages and the contact page (safe to run again), names
+ * it in the folder's studio.json and pulls its design.
+ */
+export async function init(dir, site) {
+  await mkdir(dir, { recursive: true });
+  await writeFile(join(dir, 'studio.json'), `${JSON.stringify({ site_id: site }, null, 2)}\n`);
+  await call(site, 'POST', 'template_sites/custom_site:set_up', {});
+  return pull(dir);
+}
+
+/** The font files this process has added to the site already, by their hash, so a later push sends none again. */
+const added = new Set();
+
+/**
+ * Asks the site to add a font file, with the approval its person gave where the folder keeps one: the answer, `done`
+ * or a new `approval`; an approval no longer good for the call is dropped and asked for again.
+ */
+async function askForFont(site, font, approval) {
+  const body = { name: font.name, woff2: Buffer.from(font.bytes).toString('base64') };
+  if (approval === undefined) {
+    return request(site, 'POST', 'font:add', body);
+  }
+  try {
+    return await request(site, 'POST', 'font:add', body, { 'approval-id': approval.id });
+  } catch (error) {
+    if (error instanceof Refused && error.problem?.code === 'approval_invalid') {
+      return request(site, 'POST', 'font:add', body);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Adds each of the folder's font files the site doesn't hold yet. A new one waits for its person's approval in the
+ * Studio, which says its licence allows use on websites: the push stops there, naming each file with the link to
+ * approve it at, and keeps the approval in studio.json, so the next push, once it is approved, adds the file.
+ */
+async function addFonts(dir, site) {
+  const local = (await readFonts(dir)).filter(({ hash }) => !added.has(hash));
+  if (local.length === 0) {
+    return;
+  }
+  const { fonts: held } = await call(site, 'GET', 'font:list');
+  const studio = await settingsOf(dir);
+  const approvals = new Map(Object.entries(studio.font_approvals ?? {}));
+  const waiting = [];
+  try {
+    for (const font of local.filter(({ hash }) => !held.some((known) => known.hash === hash))) {
+      let answer;
+      try {
+        answer = await askForFont(site, font, approvals.get(font.hash));
+      } catch (error) {
+        const code = error instanceof Refused ? error.problem?.code : undefined;
+        if (code === 'approval_pending') {
+          waiting.push(`design/fonts/${font.name}: still waits for your approval at ${approvals.get(font.hash).url}`);
+          continue;
+        }
+        if (code === 'approval_declined') {
+          approvals.delete(font.hash);
+          throw new Refused(409, {
+            detail: `design/fonts/${font.name} was declined: take it and its font face out of the design.`,
+          });
+        }
+        throw error;
+      }
+      if (answer.status === 'approval') {
+        approvals.set(font.hash, { id: answer.approval_id, url: answer.approval_url });
+        waiting.push(`design/fonts/${font.name}: ${answer.preview.summary} Approve it at ${answer.approval_url}`);
+      } else {
+        approvals.delete(font.hash);
+        added.add(font.hash);
+      }
+    }
+  } finally {
+    const open = approvals.size === 0 ? undefined : Object.fromEntries(approvals);
+    await writeFile(join(dir, 'studio.json'), `${JSON.stringify({ ...studio, font_approvals: open }, null, 2)}\n`);
+  }
+  if (waiting.length > 0) {
+    throw new Refused(409, {
+      detail:
+        'Not pushed: a new font file waits for your approval in the Studio. Approve it only if the font’s licence allows its use on websites, then push again.',
+      errors: waiting.map((detail) => ({ detail })),
+    });
+  }
+}
+
+/**
+ * Saves the folder's design as the site's draft design, its new font files added first: what was saved and where to
+ * look at it, in lines. A refusal throws `Refused`, naming each file and line to change, or each font file with the
+ * link to approve it at.
+ */
+export async function push(dir) {
+  const site = await siteOf(dir);
+  await addFonts(dir, site);
+  const saved = await call(site, 'POST', 'template_sites/custom_design:set', await readDesign(dir));
+  const types = saved.section_types.length === 0 ? 'none' : saved.section_types.join(', ');
+  return [
+    `Saved at ${new Date().toLocaleTimeString()}. Own section types: ${types}.`,
+    `Preview: ${new URL(`/sites/${encodeURIComponent(site)}/preview`, settings().admin).href}`,
+  ];
+}
