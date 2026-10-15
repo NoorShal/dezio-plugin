@@ -28,8 +28,9 @@ publishing and the preview link.
    every business detail you have: name, address, phone, e-mail, opening hours and the imprint's legal data. Leave out
    the `template_sites` steps: a custom site needs no trade, look or contents from the wizard.
 3. `template_sites-write` with `site.set_up`: the site becomes a template site, the base every custom site stands on.
-4. Choose the design folder, then call `design_init` with the site's id and the folder's absolute path. It makes the
-   site custom (a first design, the legal pages and the contact page) and pulls the design into `design/`.
+4. Choose the design folder, the session's working folder or a new folder within it, then call `design_init` with
+   the site's id and the folder's absolute path. It makes the site custom (a first design, the legal pages and the
+   contact page), pulls the design into `design/` and keeps with the site the prompts given there before.
 
 ## An existing site
 
@@ -42,7 +43,7 @@ The whole job, in order: `build-a-custom-site`.
 
 - Design it: the `design-a-custom-site` skill.
 - Write its pages with `content-write`, in its own section types; of the template's, only the forms, the Google
-  reviews and the legal pages. Pictures are uploaded as
-  `core-file-write` explains, then used by their file id.
+  reviews and the legal pages. Pictures are added with the plugin's `design_upload` (with the site's id), then used
+  by their file id.
 - Check what would stop a publish with `template_sites-read` (`publish.get_problems`), and publish with
   `template_sites-publish`. A person shares the preview link from the Studio's site screen.

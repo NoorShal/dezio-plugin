@@ -66,3 +66,5 @@ and the business's details with `core-site-update`.
   the Studio, text on coloured grounds uses `--site-on-primary` and `--site-on-accent`, so it keeps its contrast.
 - Nothing of template A's look shows: open a page, the contact page and a legal page side by side with the plan.
 - The contact page, the legal pages and the menu are there, and the preview shows the consent bar.
+- The contact page is written for the business: its contact block's heading, line and points in the site's own voice,
+  checked against the business's details, beyond the set-up's first words.

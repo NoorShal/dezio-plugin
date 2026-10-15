@@ -66,6 +66,9 @@ types.
   contact page's words; never rebuild the legal pages.
 - The menu: `page.move` orders it, and `page.set_menu_parent` lists a service's page under Leistungen, which its
   breadcrumb then reads: "Start > Leistungen > Fassadenanstrich". It runs two levels deep at most.
+- The links: the new site replaces the business's current one, so its menu, footer and buttons lead to its own pages.
+  Links to other places are for other services, such as social profiles, maps, videos and the authorities the legal
+  pages name. A page the menu names gets built, or its item waits until it is.
 - Each page's title, main heading and search texts: `seo-for-local-business`.
 - Share the link again for the subpages; the client approves them before step 4.
 
@@ -82,7 +85,8 @@ one on.
 - **Reviews:** `external_ratings-write` with `listing.set_link` names the business's Google listing and fetches its
   reviews; the template's `google_reviews` section shows them. Never write a review by hand.
 - **Blog:** `blog-write` (`post.create`, `post.save`, `post.publish`). A post goes live on its own when it is
-  published.
+  published; one holding a section type a design push added or changed since the site was last published waits for
+  the site's next publish, which puts the design live, so publish the post together with it.
 - **Before and after:** the platform's `before_after` section, two pictures of a job the visitor divides by dragging.
   Never write a slider of the design's own for it.
 

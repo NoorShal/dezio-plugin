@@ -117,7 +117,9 @@ push refuses a `holds` that names a field the list lacks or the page doesn't sho
   section opens the page. Never write `<h1>`.
 - `data-slot`: `nav` on a `<ul>`/`<ol>` (the menu, the current page with `aria-current="page"`), `legal-links` on a
   `<ul>` (required in the footer), `logo` on `<a>`/`<span>`/`<div>` (the logo, or the name), `year` on
-  `<span>`/`<small>`/`<p>`. Header and footer only.
+  `<span>`/`<small>`/`<p>`. Header and footer only. The logo is the business details' own: add its file with
+  `design_upload`, set its id as `logo` with `core-site-update` (`business_details.set`), and `data-slot="logo"`
+  draws it, sized by the stylesheet, where the markup would otherwise carry a drawing of it on every page.
 - `data-business`: `name`, `phone`, `email`, `street`, `postcode`, `town`, `address`, `opening-hours`; drawn only where
   the business gave it. On an `<a>`, only `phone` and `email`, which link themselves.
 
@@ -130,10 +132,11 @@ dir hidden tabindex aria-*`, plus each element's own (`href` on `a`, `type name 
 `radio`, `checkbox` or `range`, and `min max step` on a range, `type="button"` on `button`, `open` on `details`,
 `colspan rowspan scope` on table cells, SVG geometry and paint), and `data-script` where the section's own script acts.
 
-Links (`href`) go to `/…`, `#…`, `tel:`, `mailto:` or `https://`. Nothing in the markup runs or loads: no `<script>`,
-`<style>`, `<iframe>`, `<form>`, event handlers, `style` attributes or `javascript:`. Tabs, accordions and menus that
-open are made with `details`/`summary` or `input` and `:checked` in the stylesheet. What CSS can't do, a section
-type's own script does: `scripts.md` beside this file.
+Links (`href`) go to `/…`, `#…`, `tel:`, `mailto:` or `https://`. The site replaces the business's current one, so its
+own pages are linked as `/…`, and `https://` leads to other services, such as social profiles, maps and videos. Nothing
+in the markup runs or loads: no `<script>`, `<style>`, `<iframe>`, `<form>`, event handlers, `style` attributes or
+`javascript:`. Tabs, accordions and menus that open are made with `details`/`summary` or `input` and `:checked` in the
+stylesheet. What CSS can't do, a section type's own script does: `scripts.md` beside this file.
 
 ## The stylesheet
 

@@ -41,7 +41,8 @@ stops.
    - the social profiles and the Google profile;
    - their own photos, beyond those taken from their current website.
 
-   The logo and photos are uploaded as `core-file-write` explains. The services, prices and areas go into the pages'
+   The logo and photos are added with `design_upload`; the logo's file id then goes to the business details
+   (`core-site-update`, `business_details.set`, `logo`). The services, prices and areas go into the pages'
    words, not the details.
 5. **Which pages** beside the home page, as choices to tick: Leistungen (with a page per service), Über uns, Karriere,
    Blog.

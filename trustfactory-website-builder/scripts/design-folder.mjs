@@ -7,6 +7,8 @@ import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
+import { sendKeptPrompts } from './prompts.mjs';
+
 /** The online Studio, which every setting falls back to. */
 const ONLINE = { api: 'https://website-studio-api.vercel.app', admin: 'https://website-studio-admin.vercel.app' };
 
@@ -26,7 +28,7 @@ export class Refused extends Error {
 }
 
 /** The Studio and the agent key, from the environment: TF_STUDIO_KEY, TF_STUDIO_API and TF_STUDIO_ADMIN. */
-function settings() {
+export function settings() {
   const key = process.env.TF_STUDIO_KEY;
   if (key === undefined || key === '') {
     throw new Error(
@@ -56,7 +58,7 @@ async function request(site, method, path, body, headers = {}) {
 }
 
 /** One call to the site's API with the agent key: a read's answer, or an action's output. */
-async function call(site, method, path, body) {
+export async function call(site, method, path, body) {
   const answer = await request(site, method, path, body);
   if (method === 'GET') {
     return answer;
@@ -75,7 +77,7 @@ async function settingsOf(dir) {
   return JSON.parse(await readFile(file, 'utf8'));
 }
 
-async function siteOf(dir) {
+export async function siteOf(dir) {
   return (await settingsOf(dir)).site_id;
 }
 
@@ -182,14 +184,25 @@ export async function pull(dir) {
 }
 
 /**
+ * The prompts given in the folder that waited for it to be linked, or for the key, sent to its site: a line saying how
+ * many, where any were.
+ */
+async function sentPrompts(dir, site) {
+  const record = ({ session, prompt }) =>
+    call(site, 'POST', 'template_sites/design_prompt:record', { session, prompt });
+  const sent = await sendKeptPrompts(dir, record);
+  return sent === 0 ? [] : [`Kept ${String(sent)} prompt${sent === 1 ? '' : 's'} given before with the site.`];
+}
+
+/**
  * Makes the site a custom site, with a first design, the legal pages and the contact page (safe to run again), names
- * it in the folder's studio.json and pulls its design.
+ * it in the folder's studio.json, pulls its design and sends the prompts given in the folder before.
  */
 export async function init(dir, site) {
   await mkdir(dir, { recursive: true });
   await writeFile(join(dir, 'studio.json'), `${JSON.stringify({ site_id: site }, null, 2)}\n`);
   await call(site, 'POST', 'template_sites/custom_site:set_up', {});
-  return pull(dir);
+  return [await pull(dir), ...(await sentPrompts(dir, site))].join('\n');
 }
 
 /** The font files this process has added to the site already, by their hash, so a later push sends none again. */
@@ -281,5 +294,6 @@ export async function push(dir) {
   return [
     `Saved at ${new Date().toLocaleTimeString()}. Own section types: ${types}.`,
     `Preview: ${new URL(`/sites/${encodeURIComponent(site)}/preview`, settings().admin).href}`,
+    ...(await sentPrompts(dir, site)),
   ];
 }
