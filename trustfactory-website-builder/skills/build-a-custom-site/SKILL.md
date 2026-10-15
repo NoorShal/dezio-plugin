@@ -24,6 +24,12 @@ business that isn't on it sets none, and loses nothing but the trade's checks on
   for the imprint's details, opening hours, services, founding year, team size and story. It is paid, and shows its
   cost before it runs. `template_sites-read` with `prefill.get` lists what it found, each value with the page and the
   words it stands in. Set only what the client confirms: the details with `core-site-update` (`business_details.set`).
+  Then take its pictures, before any design: `template_sites-pages` with `picture.import_from_site` reads the current
+  site's pages and keeps each of its pictures in the site's library, leaving out icons, other firms' logos and stock.
+  It is paid too, and shows its cost first; `core-read` with `job.get` follows it, and `template_sites-read` with
+  `picture.get_import` says what it kept and what it left out, and why. `picture.get_contact_sheet` shows the kept
+  pictures: look at them before planning the look, which builds on the business's real photos. Placing them:
+  `local-business-design`, `pictures.md`.
 - `core-read` with `business_details.get` shows the facts the site holds, and what the imprint still needs. A page may
   claim only what is there; anything else is marked `[FEHLT: …]` (`copy-for-local-business`).
 - Every site is a real business's. Ask for its facts; where one isn't given, ask again later or mark it
@@ -38,8 +44,8 @@ business that isn't on it sets none, and loses nothing but the trade's checks on
   them with `design_push` after each change.
 - Make the home page with `content-write` (`page.create` with the slug `""`, where the site has none), then write it
   with `page.save`.
-- Its pictures: the client's own photos first, then photos Website Studio makes for the other places
-  (`local-business-design`, `pictures.md`). The same for every subpage.
+- Its pictures: the client's own photos first, from their current site and those they send, then photos Website
+  Studio makes for the other places (`local-business-design`, `pictures.md`). The same for every subpage.
 - Look at it in the Studio's preview at phone and desk widths (`accessibility-and-phone`).
 - Show it to the client: `core-preview-link-create` makes a link that shows the drafts without a login, for 1 to 30
   days. It works only with a key of the site's admin, and the link is shown once: hand it to the client as it is.

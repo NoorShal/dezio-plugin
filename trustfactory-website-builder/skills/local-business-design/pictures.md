@@ -21,14 +21,25 @@ a demanding customer would and puts it in place. A place it can't fill well stay
    such as a shop or a car wash, sets none, and its pictures are checked as any small business's.
 2. **The places:** `content-read` with `page.list_picture_places`, page by page: every picture field of its sections
    and list items, and whether it holds a picture yet.
-3. **The client's own photos:** real photos of their work, team, premises or vehicles beat any made one. Upload each
+3. **The pictures from the current site,** where `picture.import_from_site` took them (`build-a-custom-site`):
+   `template_sites-read` with `picture.get_contact_sheet` shows them as one image of numbered thumbnails, up to 30 a
+   sheet, and lists each number's file id, the page and heading it stood under, its old description and its size
+   class; its `next_cursor`, passed as `after`, shows the next sheet. The numbers start again on each sheet, so keep a
+   picture by its file id. Choose each place's picture by what you see in it: the opening takes an `opening`
+   one (1,000 pixels wide or more), a card or tile a `tile` one (600 or more), and a `small` one only a small place.
+   One marked `repeated` stood on many pages of the old site, often as its header photo. Put each in its place with
+   `content-write` (`page.save`, the field's value the file's id), then describe it with `core-file-write`
+   (`file.set_details`) as it shows there; the old description can help. The one marked `logo` is the business's
+   logo: once the client confirms it, set it with `core-site-update` (`business_details.set`, `logo`). Those left
+   unplaced leave the library by themselves 30 days after the site's first publish.
+4. **The client's own photos:** real photos of their work, team, premises or vehicles beat any made one. Upload each
    as `core-file-write` explains, describe it there, and put it in its place with `content-write` (`page.save`, the
    field's value the file's id).
-4. **The rest:** `template_sites-pages` with `picture.make`, up to ten places at once, each with its `scene`, `alt`
+5. **The rest:** `template_sites-pages` with `picture.make`, up to ten places at once, each with its `scene`, `alt`
    and `shape`. It says first what it will cost, then is confirmed. `template_sites-read` with `picture.get_made` says
    what came of each place: placed, refused with the check's reason, not made in time, a picture put there
    meanwhile, or the place gone.
-5. **A refused place:** read the check's reason, write the scene again calmer (below), and ask once more.
+6. **A refused place:** read the check's reason, write the scene again calmer (below), and ask once more.
 
 ## The scene, in English
 

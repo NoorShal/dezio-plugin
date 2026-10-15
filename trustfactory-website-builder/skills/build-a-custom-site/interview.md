@@ -15,7 +15,8 @@ where a page needs it.
 Ask whether the business has a website now. If it has, offer to read it: `template_sites-write` with `prefill.start`.
 It is paid and says its cost before it runs; tell the client the cost and run it only on their yes.
 `template_sites-read` with `prefill.get` lists what it found: read it back, set only what the client confirms, and ask
-below only for what is still missing.
+below only for what is still missing. Offer to take its pictures as well (`picture.import_from_site`, in
+`template_sites-pages`): it is paid too, so say its cost and run it on their yes.
 
 ## Then, in small groups
 
@@ -38,7 +39,7 @@ stops.
    - the services, with prices where they want them shown, and the towns and areas served;
    - the story (the year it started, what sets it apart), the owner's qualification, the team;
    - the social profiles and the Google profile;
-   - their own photos.
+   - their own photos, beyond those taken from their current website.
 
    The logo and photos are uploaded as `core-file-write` explains. The services, prices and areas go into the pages'
    words, not the details.
