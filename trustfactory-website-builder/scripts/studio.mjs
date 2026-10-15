@@ -9,7 +9,7 @@ import { init, pull, push, Refused } from './design-folder.mjs';
 
 const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
 
-  init <site id>  Makes the site a custom site (a first design, the legal pages and the contact page; safe to run
+  init <site id>  Makes the site a custom site (a first design and the contact page; safe to run
                   again) and pulls its design into the folder.
   pull            Writes the site's design into the folder's design/ files.
   push            Saves the folder's design as the site's draft design; a refused file is named with its line.

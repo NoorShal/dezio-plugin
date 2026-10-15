@@ -9,7 +9,7 @@ The site must be a custom site with a design folder (the `connect-a-site` skill)
 
 ```
 design/header.html          what stands above every page
-design/footer.html          what stands below every page; it must hold the legal links
+design/footer.html          what stands below every page, with the legal pages' links where the site has them
 design/stylesheet.css       the site's own stylesheet
 design/sections/<type>.json a section type of its own: its fields, and what it holds for search engines
 design/sections/<type>.html the markup it is drawn with
@@ -22,7 +22,7 @@ design/fonts/<name>.woff2   a font file of the brand's, which the stylesheet's f
    them as the site's draft design, answering the preview's address, or each refusal as
    `design/<file>:<line> what to change`.
 2. Fix every refusal and push again before going on: a refused push keeps the design saved before it.
-3. Write the pages with `content-write`, using the site's own section types and the template's (forms, legal pages).
+3. Write the pages with `content-write`, using the site's own section types and the template's (the forms).
 4. Look at the result in the Studio's preview (the address `design_push` answers), reloaded by hand. Nothing goes
    public until the site is published. Judge motion there or through a share link: the Studio's editor runs no
    scripts, so it shows each section still.
@@ -124,7 +124,8 @@ push refuses a `holds` that names a field the list lacks or the page doesn't sho
 - `data-heading`: the section's own heading, one `<h2>`–`<h6>` outside lists; it becomes the page's `<h1>` when the
   section opens the page. Never write `<h1>`.
 - `data-slot`: `nav` on a `<ul>`/`<ol>` (the menu, the current page with `aria-current="page"`), `legal-links` on a
-  `<ul>` (required in the footer), `logo` on `<a>`/`<span>`/`<div>` (the logo, or the name), `year` on
+  `<ul>` in the footer (the legal pages the site has, and the consent bar's button where it asks first; nothing on a
+  site with neither), `logo` on `<a>`/`<span>`/`<div>` (the logo, or the name), `year` on
   `<span>`/`<small>`/`<p>`. Header and footer only. The logo is the business details' own: add its file with
   `design_upload`, set its id as `logo` with `core-site-update` (`business_details.set`), and `data-slot="logo"`
   draws it, sized by the stylesheet, where the markup would otherwise carry a drawing of it on every page.
@@ -202,7 +203,7 @@ the design's own.
 **Sections:** the design draws its pages with section types of its own. Of the platform's, use only those that do
 what a design can't: the contact form (`contact_form`), the job application form (`application_form`), the Google
 reviews (`google_reviews`), a job's pictures before and after (`before_after`), a video from YouTube or Vimeo
-(`video`), whose player loads only once the visitor agrees, and the legal pages, which come with the set-up. Restyle
+(`video`), whose player loads only once the visitor agrees, and our legal pages, where the client chose them. Restyle
 them through the site's variables above and the design's own rules: the before-and-after by its classes
 `before-after-frame`, `before-after-label`, `before-after-divider` and `--position`; the video by `video-frame`, its
 field of sixteen by nine, and `video-note`, the card on it until the player loads. The pages the site draws on its
@@ -245,6 +246,6 @@ its form, the points in a row:
 }
 ```
 
-The legal links in the footer and the consent bar must stay visible and readable on every page, at every width: the
-law asks it of each page, and no check sees a stylesheet hide them. Never give them `display: none`, `visibility:
+Where the site has legal pages, their links in the footer stay visible and readable on every page, at every width, as
+does the consent bar: no check sees a stylesheet hide them. Never give them `display: none`, `visibility:
 hidden`, a size of nothing, a place off the screen, or a colour too faint to read, and never cover them.

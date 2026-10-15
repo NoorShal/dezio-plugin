@@ -32,8 +32,6 @@ The refusal names the file and line. The usual causes:
   one place for a `url(…)`, naming a file of `design/fonts/` as `url("fonts/<file>.woff2") format("woff2")`.
 - **A font file not added**: a new file of `design/fonts/` waits for its person's approval in the Studio, at the link
   the push gives; push again once it is approved. A refused one is no WOFF 2.0 file or larger than 500 KB.
-- **The footer without `<ul data-slot="legal-links">`**: every page must link the imprint, privacy policy and
-  accessibility statement.
 - **A section type removed while a page still holds one**: take the section off the pages first, or keep the type.
 - **A changed section type that a page's section no longer fits**, such as a list now needing more items than the
   section holds: the refusal names the page. Change that section first, or loosen the definition.
@@ -49,14 +47,14 @@ The refusal names the file and line. The usual causes:
   types.
 
 - **Legal links or the consent bar hidden or covered**, by a stylesheet rule, a narrow-screen menu or a sticky band:
-  no check catches it and the law forbids it. Look at the footer and the consent bar on a phone width before handing
-  a site over.
+  no check catches it. Where the site has legal pages, look at the footer and the consent bar on a phone width before
+  handing a site over.
 
 ## A publish is stopped
 
 `template_sites-read` with `publish.get_problems` lists each problem, where it is and what to change. Among them: a
-legal page missing, a required field left empty, a picture neither described (alt text) nor marked decorative, a
-broken link, or business details the imprint needs. Fix pages with `content-write`, pictures with `core-file-write`
+site without pages or a business without a name, a required field left empty, a picture neither described (alt text)
+nor marked decorative, a broken link, or business details our imprint draws and doesn't have. Fix pages with `content-write`, pictures with `core-file-write`
 and the business's details with `core-site-update`.
 
 ## Before handing a site over
@@ -64,7 +62,8 @@ and the business's details with `core-site-update`.
 - Every page reads well on a phone: test the stylesheet at narrow widths.
 - Every text colour against the ground it stands on reaches 4.5:1, measured; where the client changes the colours in
   the Studio, text on coloured grounds uses `--site-on-primary` and `--site-on-accent`, so it keeps its contrast.
-- Nothing of template A's look shows: open a page, the contact page and a legal page side by side with the plan.
-- The contact page, the legal pages and the menu are there, and the preview shows the consent bar.
+- Nothing of template A's look shows: open a page, the contact page and a legal page, where there is one, side by side
+  with the plan.
+- The contact page and the menu are there, the legal pages the client chose, and the preview shows the consent bar.
 - The contact page is written for the business: its contact block's heading, line and points in the site's own voice,
   checked against the business's details, beyond the set-up's first words.

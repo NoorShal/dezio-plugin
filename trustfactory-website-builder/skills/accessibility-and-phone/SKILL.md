@@ -11,8 +11,8 @@ metadata:
 
 # Accessibility and the phone
 
-The site's accessibility statement says it meets the rules, and most visitors come on a phone. The design keeps both
-true. Each rule names the WCAG 2.2 criterion behind it, with its level; a rule without one is our own standard.
+The site meets the rules, as our accessibility statement says where the site has it, and most visitors come on a
+phone. The design keeps both true. Each rule names the WCAG 2.2 criterion behind it, with its level; a rule without one is our own standard.
 
 ## The rules that come first
 
@@ -25,7 +25,8 @@ true. Each rule names the WCAG 2.2 criterion behind it, with its level; a rule w
 5. **Tap targets of 44 × 44 px** in menus, the footer and buttons. WCAG's minimum is 24 × 24 px (2.5.8, AA); 44 × 44 px
    is its enhanced level (2.5.5, AAA) and our standard.
 6. **Nothing moves on its own**, and motion respects the visitor's setting (2.2.2, A).
-7. **The legal links and the consent bar** visible and readable on every page, at every width.
+7. **The legal links, where the site has legal pages, and the consent bar** visible and readable on every page, at
+   every width.
 
 ## What the platform draws around the design
 
@@ -171,8 +172,8 @@ layout shifts no more than 0.1.
 
 ## Legal links and the consent bar
 
-- The footer's `<ul data-slot="legal-links">` is visible and readable on every page and at every width: never
-  `display: none`, a tiny size, a faint colour, or a place off the screen.
+- Where the site has legal pages, the footer's `<ul data-slot="legal-links">` is visible and readable on every page
+  and at every width: never `display: none`, a tiny size, a faint colour, or a place off the screen.
 - On a phone, the footer's columns stack, and the legal links keep at least 44 px between them.
 - The consent bar must show above everything on the first visit. Where the site asks for consent, the legal links hold
   "Cookie-Einstellungen", which opens it again: keep it with them.
@@ -183,7 +184,7 @@ At 320, 390 and 1440 px, in the Studio's preview:
 - nothing scrolls sideways at 320 px, and with the browser's text at 200 % nothing is cut off;
 - tab through a page: every stop shows its ring, in reading order, never under the sticky header;
 - open the phone menu and reach every page, those listed under another included;
-- read the footer's legal links and the consent bar;
+- read the footer's legal links, where the site has them, and the consent bar;
 - look at a deep band (`--site-accent`) and a filled button: their words still read;
 - read every link's words alone: each says where it leads;
 - look at each picture's description in the library.

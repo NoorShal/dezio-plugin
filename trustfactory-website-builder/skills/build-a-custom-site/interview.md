@@ -20,7 +20,8 @@ below only for what is still missing. Offer to take its pictures as well (`pictu
 
 ## Then, in small groups
 
-Before each group, say which answers the site needs before it can go live (for the imprint) and which are optional.
+Before each group, say which answers the site needs and which are optional; our imprint, where the client chooses it,
+needs the legal ones.
 After each group, save the answers with `core-site-update` (`business_details.set`), so nothing is lost if the talk
 stops.
 
@@ -46,11 +47,16 @@ stops.
    words, not the details.
 5. **Which pages** beside the home page, as choices to tick: Leistungen (with a page per service), Über uns, Karriere,
    Blog.
+6. **Legal pages,** a plain yes or no: does the site get our imprint, privacy policy and accessibility statement,
+   written for German law, in German? On a yes, add them (`connect-a-site`, step 5); the imprint then needs the
+   details of groups 1 to 3. On a no, the business may give its own texts, written as pages of the site and marked as
+   its legal pages, or have none.
 
 ## At the end
 
-- `core-read` with `business_details.get`: say what `missing_for_publish` still lists, in plain words ("the site still
-  needs your phone number before it can go live"). A site can be built with gaps, but not published.
+- Where the site has our imprint, `core-read` with `business_details.get`: say what `missing_for_imprint` still
+  lists, in plain words ("the imprint still needs your phone number before the site can go live"). A site can be built
+  with gaps, but not published while our imprint lacks a detail it draws.
 - Ask: "Anything else the site should say or show?"
 - The style: offer three directions, one line each, and the person picks one. `local-business-design` then plans the
   chosen one.

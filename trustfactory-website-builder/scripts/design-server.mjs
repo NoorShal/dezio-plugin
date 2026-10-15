@@ -40,7 +40,7 @@ const TOOLS = [
   {
     name: 'design_init',
     description:
-      'Starts a design folder for a Website Studio site: makes the site a custom site, with a first design, its legal pages and its contact page (safe to run again), names it in the folder’s studio.json and pulls its design into design/; the prompts given in the folder before it was linked are kept with the site then.',
+      'Starts a design folder for a Website Studio site: makes the site a custom site, with a first design and its contact page (safe to run again; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json and pulls its design into design/; the prompts given in the folder before it was linked are kept with the site then.',
     inputSchema: {
       type: 'object',
       properties: { site_id: { type: 'string', description: 'The site’s id.' }, folder: FOLDER },
@@ -152,7 +152,7 @@ async function resultOf(method, params) {
       return {
         protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: 'website-studio-design-folder', version: '0.2.13' },
+        serverInfo: { name: 'website-studio-design-folder', version: '0.2.14' },
       };
     }
     case 'ping':

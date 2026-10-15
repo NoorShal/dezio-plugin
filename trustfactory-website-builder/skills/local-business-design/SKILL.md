@@ -26,7 +26,7 @@ first.
    sites has failed the brief. Leave the colours to the Studio's `--site-*` variables only where the designer and the
    client decide the client should change them there.
 3. **The design's own sections.** Of the template's, only the forms (`contact_form`, `application_form`), the Google
-   reviews (`google_reviews`) and the legal pages, restyled to the design's look. Questions and services stand in the
+   reviews (`google_reviews`) and our legal pages where the client chose them, restyled to the design's look. Questions and services stand in the
    design's own sections, which say what they hold for search engines (`holds`).
 4. **Proof is never invented:** no customers, reviews, numbers, years, certificates or photos of work that isn't
    theirs. What's missing is marked for the client (`copy-for-local-business`).
@@ -104,7 +104,8 @@ Settled for our sites, where the sources disagree:
 - **Über uns:** the story, the team, the qualifications, and the year the business started.
 - **Karriere:** only when the business is hiring; one page per job.
 - **Kontakt:** the form, the address, the hours and the map.
-- **Imprint, privacy policy and accessibility statement:** the platform writes them; link them, never rebuild them.
+- **Imprint, privacy policy and accessibility statement:** the client's choice; ours, where chosen, the platform
+  writes: link them, never rebuild them.
 
 The menu: the name or logo, three to five links, and one action (the phone or the enquiry). Six entries at most.
 

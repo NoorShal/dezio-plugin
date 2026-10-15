@@ -30,7 +30,8 @@ business that isn't on it sets none, and loses nothing but the trade's checks on
   `picture.get_import` says what it kept and what it left out, and why. `picture.get_contact_sheet` shows the kept
   pictures: look at them before planning the look, which builds on the business's real photos. Placing them:
   `local-business-design`, `pictures.md`.
-- `core-read` with `business_details.get` shows the facts the site holds, and what the imprint still needs. A page may
+- `core-read` with `business_details.get` shows the facts the site holds, and what our imprint still needs where the
+  site has it. A page may
   claim only what is there; anything else is marked `[FEHLT: …]` (`copy-for-local-business`).
 - Every site is a real business's. Ask for its facts; where one isn't given, ask again later or mark it
   `[FEHLT: …]` where a page needs it.
@@ -62,8 +63,8 @@ types.
   `content-write` (`page.create`), then write it (`page.save`) in the design's own section types. Never with
   `template_sites-pages`' `page.add`: it writes the template's own town and service sections, which a custom design
   doesn't style, and a custom site refuses it.
-- The contact page, the imprint, the privacy policy and the accessibility statement came with the set-up. Write the
-  contact page's words; never rebuild the legal pages.
+- The contact page came with the set-up: write its words. The legal pages are the client's choice (`connect-a-site`,
+  step 5): ours, added with `legal.add_pages`, are never rebuilt by hand.
 - The menu: `page.move` orders it, and `page.set_menu_parent` lists a service's page under Leistungen, which its
   breadcrumb then reads: "Start > Leistungen > Fassadenanstrich". It runs two levels deep at most.
 - The links: the new site replaces the business's current one, so its menu, footer and buttons lead to its own pages.
@@ -90,7 +91,7 @@ one on.
 - **Before and after:** the platform's `before_after` section, two pictures of a job the visitor divides by dragging.
   Never write a slider of the design's own for it.
 
-These are the only platform sections a custom site uses, beside the legal pages: they do what a design can't (send
+These are the only platform sections a custom site uses, beside our legal pages: they do what a design can't (send
 a form, fetch the Google reviews, move by the platform's own script). They take the design's look through its stylesheet (`design-a-custom-site`).
 
 ## 5. Checks, then publishing

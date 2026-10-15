@@ -273,8 +273,8 @@ async function sentPrompts(dir, site) {
 }
 
 /**
- * Makes the site a custom site, with a first design, the legal pages and the contact page (safe to run again), names
- * it in the folder's studio.json, pulls its design and sends the prompts given in the folder before.
+ * Makes the site a custom site, with a first design and the contact page (safe to run again), names it in the folder's
+ * studio.json, pulls its design and sends the prompts given in the folder before.
  */
 export async function init(dir, site) {
   await mkdir(dir, { recursive: true });

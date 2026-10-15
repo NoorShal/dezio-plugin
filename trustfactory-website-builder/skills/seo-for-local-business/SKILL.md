@@ -113,6 +113,6 @@ really gives it; otherwise leave it out (`copy-for-local-business`).
 - Text that is in the page for people: never hide it with `display: none`, off-screen or with the ground's colour, for
   search engines or otherwise.
 - The phone, the address and the hours as text through `data-business`, never as pictures.
-- The `nav` slot in the header and the `legal-links` slot in the footer.
+- The `nav` slot in the header, and the `legal-links` slot in the footer where the site has legal pages.
 - `holds` on the design's own sections that list questions or the home page's services: without it they show them
   to people but give search engines nothing.
