@@ -208,8 +208,11 @@ them through the site's variables above and the design's own rules: the before-a
 field of sixteen by nine, and `video-note`, the card on it until the player loads. The pages the site draws on its
 own, the one a sender lands on once a form or an application is sent and the page not found, stand between the
 design's header and footer as `<main class="notice">`: a heading, a line or two and the way home (`.button`), laid
-out plainly in the page's column; restyle them by `.notice`. Questions and services a design
-shows in its own sections reach search engines through `holds`.
+out plainly in the page's column; restyle them by `.notice`. The platform's buttons are `.button` with
+`.button-primary` (filled in the call colour) or `.button-secondary` (outlined); restyle them by those classes. The
+filled one's colours hold over a rule for every link (`a`, `a:hover`), so its words never take a link colour; to give
+it others, set them on `.button-primary` and on its `:hover`, `:focus-visible` and `:active` states. Questions and
+services a design shows in its own sections reach search engines through `holds`.
 
 **The contact block** (`contact_form`) takes the design's layout through these classes: `contact-block` (the grid;
 `contact-block-pair` where it holds two parts), `contact-words` (the heading, the line and the points),
