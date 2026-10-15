@@ -9,7 +9,7 @@ In Claude Code (the terminal, or the desktop app's Code tab):
 
 ```
 /plugin marketplace add NoorShal/trustfactory-website-builder
-/plugin install trustfactory-website-builder@trustfactory
+/plugin install trustfactory-website-builder@website-studio
 ```
 
 It asks once for your Studio key: make one in the Studio under **Agent keys**. The key is kept in your computer's
@@ -24,7 +24,7 @@ Ask for what you want, for example:
 ## Updates
 
 ```
-/plugin marketplace update trustfactory
+/plugin marketplace update website-studio
 ```
 
 This repository is a published copy; the plugin is developed and tested together with the Studio.
