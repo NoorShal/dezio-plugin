@@ -167,10 +167,6 @@ The site's variables, all set by the design:
   `--site-text-h3`, `--site-text-body`;
 - shape: `--site-radius`, `--site-spacing`.
 
-**Only where the client should change the colours in the Studio**, as the designer decides with them: leave the colour
-variables unset and draw with `var(--site-…)`; the Studio's colour choices then reach the design. Without that
-decision, the design sets its own.
-
 **Fonts:** the brand's own, where it has them. Put each WOFF 2.0 file in `design/fonts/` (lowercase words joined by
 hyphens, at most 500 KB each, 12 per design) and name it in a font face, the only place a stylesheet may load a file:
 
@@ -193,10 +189,43 @@ the design's own.
 
 **Sections:** the design draws its pages with section types of its own. Of the platform's, use only those that do
 what a design can't: the contact form (`contact_form`), the job application form (`application_form`), the Google
-reviews (`google_reviews`), a job's pictures before and after (`before_after`), and the legal pages, which come with
-the set-up. Restyle them through the site's variables above and the design's own rules: the before-and-after by its
-classes `before-after-frame`, `before-after-label`, `before-after-divider` and `--position`. Questions and services a design shows in its own sections reach search
-engines through `holds`.
+reviews (`google_reviews`), a job's pictures before and after (`before_after`), a video from YouTube or Vimeo
+(`video`), whose player loads only once the visitor agrees, and the legal pages, which come with the set-up. Restyle
+them through the site's variables above and the design's own rules: the before-and-after by its classes
+`before-after-frame`, `before-after-label`, `before-after-divider` and `--position`; the video by `video-frame`, its
+field of sixteen by nine, and `video-note`, the card on it until the player loads. Questions and services a design
+shows in its own sections reach search engines through `holds`.
+
+**The contact block** (`contact_form`) takes the design's layout through these classes: `contact-block` (the grid;
+`contact-block-pair` where it holds two parts), `contact-words` (the heading, the line and the points),
+`contact-reasons` with `contact-reason-icon` and `contact-reason-text` (the points), `contact-map`, and
+`contact-form-card` with `contact-form-head` (the form). Its layout's `map` leaves the map out: `"hidden"`, set with
+`content-write` (`page.save`, the section's `layout`), and the words and the form stand side by side. Its words above
+its form, the points in a row:
+
+```css
+.contact-block,
+.contact-block-pair {
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: auto;
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.contact-words {
+  grid-column: auto;
+}
+
+.contact-words h2 {
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
+}
+
+.contact-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+}
+```
 
 The legal links in the footer and the consent bar must stay visible and readable on every page, at every width: the
 law asks it of each page, and no check sees a stylesheet hide them. Never give them `display: none`, `visibility:
