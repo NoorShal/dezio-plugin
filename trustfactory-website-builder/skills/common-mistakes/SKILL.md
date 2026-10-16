@@ -17,8 +17,9 @@ The refusal names the file and line. The usual causes:
 - **Content inside a bound element**: an element with `data-text`, `data-rich`, `data-image`, `data-slot` or
   `data-business` is written empty; the binding fills it.
 - **A field the markup names that the section type hasn't**, or a list item's field used outside its `data-each`.
-- **A `holds` that names a field its list lacks, or one the markup doesn't draw** inside the list's `data-each`: name
-  the list's own fields, and draw both, as search engines take only what the page shows.
+- **A `holds` that names a field its list lacks, or one the markup doesn't draw** inside the list's `data-each` (for
+  a job, anywhere in the markup): name the type's own fields, and draw both, as search engines take only what the page
+  shows.
 - **`<h1>`**, or two `data-heading` in one section: a section has one heading of its own, and the page's `<h1>` is the
   opening section's.
 - **`style="…"`, `<script>`, `<style>`, `onclick`, `<iframe>`, `<form>`**: the markup draws and never runs or loads.
@@ -38,13 +39,24 @@ The refusal names the file and line. The usual causes:
 
 ## A design looks off
 
-- **A class the template already styles**, such as `eyebrow`, `button` or `section-head`: the template's stylesheet
-  loads under every page, before the design's, so its rules still apply. Give the design's classes a short prefix of
-  the site's own, such as `fh-eyebrow`, or override every property the template sets.
-- **The site looks like one of our templates**: the design left the site's variables and the base to template A's
-  look. Set the site's colour, type and shape variables on `:root` and the base (`body`, headings, links) in the
+- **A class the platform's base already styles**, such as `button`, `eyebrow`, `card` or `section-head`: a custom
+  site's pages stand on the platform's plain base, which loads before the design's stylesheet, so its rules still apply
+  to every property the design leaves unset. Give the design's classes a short prefix of the site's own, such as
+  `fh-eyebrow`, or set every property the base sets.
+- **The site looks like one of our templates**: the design left the site's variables and its base (`body`, headings,
+  links) to the template look the site started on, such as Sand. Set the site's colour, type and shape variables on `:root` and the base (`body`, headings, links) in the
   design's stylesheet (`design-a-custom-site`, "The stylesheet"), and draw the pages with the design's own section
   types.
+
+- **A section empty or out of place in the Studio's editor**, though the page is right: the editor runs no script
+  and wraps each section in elements of its own, with no `<main>`. Content hidden until it is in view (`opacity: 0`
+  until `[data-in-view]`) stays hidden there; show it whole without the mark, and let the mark start the motion.
+  Selectors through `main >` or the section beside it (`+`, `~`, `:nth-child`) match differently there; style each
+  section from its own classes.
+
+- **A logo or a photo drawn as SVG in the markup**, traced from the picture: it weighs kilobytes on every page and
+  never changes with the business's logo. Upload the file with `design_upload`; the logo is the business details'
+  `logo`, drawn by `data-slot="logo"`, and a picture is an `image` field's.
 
 - **Legal links or the consent bar hidden or covered**, by a stylesheet rule, a narrow-screen menu or a sticky band:
   no check catches it. Where the site has legal pages, look at the footer and the consent bar on a phone width before

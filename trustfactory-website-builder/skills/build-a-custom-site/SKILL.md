@@ -50,8 +50,9 @@ business that isn't on it sets none, and loses nothing but the trade's checks on
 - Look at it in the Studio's preview at phone and desk widths (`accessibility-and-phone`).
 - Show it to the client: `core-preview-link-create` makes a link that shows the drafts without a login, for 1 to 30
   days. It works only with a key of the site's admin, and the link is shown once: hand it to the client as it is.
-- Change it until the client approves it. Every push is kept as a version (`template_sites-read` with
-  `design_version.list`), and `template_sites-custom` with `custom_design.roll_back` takes the design back to one.
+- Change it until the client approves it. Every push is kept as a version, your pushes within a minute as one
+  (`template_sites-read` with `design_version.list`), and `template_sites-custom` with `custom_design.roll_back` takes
+  the design back to one.
 
 Go on only once the client has approved: every subpage uses the home page's header, footer, stylesheet and section
 types.

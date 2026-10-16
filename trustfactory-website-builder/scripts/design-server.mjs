@@ -152,7 +152,7 @@ async function resultOf(method, params) {
       return {
         protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: 'website-studio-design-folder', version: '0.2.14' },
+        serverInfo: { name: 'website-studio-design-folder', version: '0.2.15' },
       };
     }
     case 'ping':

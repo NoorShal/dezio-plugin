@@ -28,7 +28,7 @@ At every publish, for every page, without the design's help:
   - any page with a section that holds questions: its questions and answers.
 
 A design adds no structured data of its own: its own section types say what they list with `holds` (questions with
-their answers, or the business's services; the `design-a-custom-site` skill), and the platform writes the rest. It must not hide the facts behind it: write the business's
+their answers, the business's services, or one job; the `design-a-custom-site` skill), and the platform writes the rest. It must not hide the facts behind it: write the business's
 details through `core-site-update`, not into a section's text alone.
 
 ## Per page
@@ -114,5 +114,5 @@ really gives it; otherwise leave it out (`copy-for-local-business`).
   search engines or otherwise.
 - The phone, the address and the hours as text through `data-business`, never as pictures.
 - The `nav` slot in the header, and the `legal-links` slot in the footer where the site has legal pages.
-- `holds` on the design's own sections that list questions or the home page's services: without it they show them
-  to people but give search engines nothing.
+- `holds` on the design's own sections that list questions or the home page's services, or that show one job:
+  without it they show them to people but give search engines nothing.

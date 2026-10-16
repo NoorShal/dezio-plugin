@@ -33,7 +33,9 @@ the key from `TF_STUDIO_KEY`.
 Each prompt given inside the folder is kept with the site, with its Claude Code session, by the plugin's hook, so the
 design can be followed back to what was asked; `template_sites-read` with `design_prompt.list` reads them.
 
-Every push that changes the design is kept as a numbered version, the newest hundred. `template_sites-read` with
+Every push that changes the design is kept as a numbered version, the newest 20; a run of your pushes within a
+minute is one version, under the last one's number, and past 10 versions in an hour a push takes the newest one's
+place, so a version stands for a step you meant. `template_sites-read` with
 `design_version.list` lists them, and `template_sites-custom` with `custom_design.roll_back` and a version's number
 takes the design back to it, saved again as the newest; the Studio's Design tab shows and restores them too. A client
 who edits the site may push and restore as well, so look at the list before a push that builds on an older state.
@@ -103,14 +105,19 @@ letter. The platform keeps 29 names for its own fields and requests, so a key ta
 `data-variant="<key>"` draws an element only in that variant.
 
 `holds` (optional) says what the section lists, so the site's structured data names it for search engines as it names
-the template's `faq` and `services` sections:
+the template's `faq` and `services` sections and its job pages:
 - `{ "kind": "questions", "list": <list field>, "question": <text field>, "answer": <text or rich text field> }`: the
   page's questions and answers;
 - `{ "kind": "services", "list": …, "name": <text field>, "description": <text or rich text field> }`: the business's
-  services, from the first section on the home page that lists any.
+  services, from the first section on the home page that lists any;
+- `{ "kind": "job", "title": <text field>, "description": <text or rich text field>, "employment": <choice field> }`:
+  one job, which a page holding exactly one such section advertises to Google's job listings; `employment` is
+  optional, and its options' keys are among `full_time`, `part_time`, `contractor`, `temporary`, `intern`,
+  `volunteer`, `per_diem` and `other`.
 
-Both fields must be drawn inside the list's `data-each` element: search engines take only what the page shows, and the
-push refuses a `holds` that names a field the list lacks or the page doesn't show.
+A list's two fields must be drawn inside its `data-each` element, and a job's title and description in the markup:
+search engines take only what the page shows, and the push refuses a `holds` that names a field the type lacks or the
+page doesn't show.
 
 ## Bindings
 
@@ -141,6 +148,10 @@ dir hidden tabindex aria-*`, plus each element's own (`href` on `a`, `type name 
 `radio`, `checkbox` or `range`, and `min max step` on a range, `type="button"` on `button`, `open` on `details`,
 `colspan rowspan scope` on table cells, SVG geometry and paint), and `data-script` where the section's own script acts.
 
+SVG in markup is for small icons of a few shapes. A logo, a photo or a drawing traced from a picture is a file: add it
+with `design_upload` and draw it through `data-slot="logo"` (the logo, set as the business details' `logo`) or an
+`image` field (`data-image`). Written into the markup, it is copied into every page that shows it, and into every push.
+
 Links (`href`) go to `/…`, `#…`, `tel:`, `mailto:` or `https://`. The site replaces the business's current one, so its
 own pages are linked as `/…`, and `https://` leads to other services, such as social profiles, maps and videos. Nothing
 in the markup runs or loads: no `<script>`, `<style>`, `<iframe>`, `<form>`, event handlers, `style` attributes or
@@ -150,9 +161,19 @@ section moves as it scrolls into view.
 
 ## The stylesheet
 
-It is drawn after the template's and the site's stylesheets, and wins over every rule of the template's, which sits in
-cascade layers. It loads nothing but the design's own font files: no `@import`, `url(…)` outside a font face,
-`image-set(…)` or backslash escapes.
+It is drawn after the platform's base and the site's stylesheet, and wins over every rule of the base, which sits in
+cascade layers. The base draws the platform's own parts plainly (the contact form, the legal pages, the consent bar)
+and styles `.button`, `.eyebrow`, `.card` and `.section-head`, so a property the design leaves unset on those classes
+keeps the base's: give the design's own classes a short prefix of the site's, such as `fh-`. It loads nothing but the
+design's own font files: no `@import`, `url(…)` outside a font face, `image-set(…)` or backslash escapes.
+
+The Studio's editor draws the same sections, without running any script and with each section wrapped in elements of
+its own, and no `<main>`. So:
+- never hide a section's content until it is in view (`opacity: 0` until `[data-in-view]`): the mark never comes in
+  the editor, nor on a page read without scripts. Let the mark start a motion from content that stands whole without
+  it (`scripts.md`);
+- style each section from its own classes, never through `main >` or the section beside it (`+`, `~`, `:nth-child`
+  among the sections), which match differently there.
 
 **A custom site has a look of its own.** The site starts on one of template A's looks (such as Sand), and everything
 the stylesheet doesn't set still shows it. So the stylesheet sets, from the design's own plan:

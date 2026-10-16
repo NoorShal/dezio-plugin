@@ -17,8 +17,8 @@ const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
 
 The folder (default: the current one) holds studio.json, which names the site, and design/:
   design/header.html, design/footer.html, design/stylesheet.css,
-  design/sections/<type>.json (the section type, and under "holds" the questions or services it lists, where it
-  does) beside design/sections/<type>.html (its markup) and, where it moves, design/sections/<type>.js (its own
+  design/sections/<type>.json (the section type, and under "holds" the questions, services or job it shows, where
+  it does) beside design/sections/<type>.html (its markup) and, where it moves, design/sections/<type>.js (its own
   script, export function attach(root), given each element its markup marks data-script="<type>"),
   design/fonts/<name>.woff2, the font files the stylesheet's font faces name, as url("fonts/<name>.woff2"). A push
   adds a font file new to the site only once you approved it in the Studio, at the link the push gives: approve it
@@ -49,13 +49,31 @@ async function pushed(dir) {
 async function dev(dir) {
   await pushed(dir);
   let waiting;
+  // One push at a time: a save while one is on its way is pushed once it has answered, so an older push never lands
+  // after a newer one, and any number of saves meanwhile make one push.
+  let running = false;
+  let again = false;
+  const next = () => {
+    if (running) {
+      again = true;
+      return;
+    }
+    running = true;
+    pushed(dir)
+      .catch((error) => console.error(error.message))
+      .finally(() => {
+        running = false;
+        if (again) {
+          again = false;
+          next();
+        }
+      });
+  };
   console.log('Pushing on every save to design/. Stop with Ctrl+C.');
   watch(join(dir, 'design'), { recursive: true }, () => {
     clearTimeout(waiting);
     // A save often writes a file more than once; one push follows the last write.
-    waiting = setTimeout(() => {
-      pushed(dir).catch((error) => console.error(error.message));
-    }, 300);
+    waiting = setTimeout(next, 300);
   });
 }
 
