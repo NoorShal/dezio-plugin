@@ -1,18 +1,21 @@
 ---
-name: accessibility-and-phone
-description: Makes a custom site readable and usable for everyone and on any phone - contrast through the site's colour variables, a visible focus that a sticky header never hides, tap sizes, headings and link words, reflow at 320 px and 200 % text, calm motion, a phone menu that works without a script, German text that wraps and hyphenates, picture descriptions, speed, and the legal links and consent bar always in view - with examples in the design-folder format and the WCAG criterion behind each rule. Use when writing a custom design's header, footer and stylesheet, and before handing the site over.
 license: Contains rules adapted from Jakub Krehel's skills, Vercel's web interface guidelines and Addy Osmani's web-quality-skills (all MIT). See THIRD-PARTY.md in the plugin.
 metadata:
   source: "jakubkrehel/skills better-accessibility, better-layout, better-typography; vercel-labs/web-interface-guidelines command.md; addyosmani/web-quality-skills core-web-vitals, performance"
   commit: "jakubkrehel/skills 4c66b1fa86e9; vercel-labs/web-interface-guidelines 434b7f913646; addyosmani/web-quality-skills afa8da942115"
   sha256: "better-accessibility df0cafe0e75a0854, better-layout 8c5883ccb23c27c3, better-typography e60ca6467ba60e68, command.md d246b026f4f29b58, core-web-vitals 731aa78c0347e8b3, performance b0c220185d88c61f"
-  changes: "Trustfactory's own skill, with rules adapted from the sources and each WCAG number checked against WCAG 2.2; the picture descriptions are in our own words after ideas from Mike Gifford's image-alt-text (not copied); interface-rules.md is Vercel's rules file trimmed for designs that run no script."
+  changes: "Trustfactory's own, with rules adapted from the sources and each WCAG number checked against WCAG 2.2; the picture descriptions are in our own words after ideas from Mike Gifford's image-alt-text (not copied)."
 ---
 
 # Accessibility and the phone
 
 The site meets the rules, as our accessibility statement says where the site has it, and most visitors come on a
-phone. The design keeps both true. Each rule names the WCAG 2.2 criterion behind it, with its level; a rule without one is our own standard.
+phone. The design keeps both true. Each rule names the WCAG 2.2 criterion behind it, with its level; a rule without
+one is our own standard.
+
+Contents: the rules that come first; what the platform draws; contrast; focus; link words; reflow, zoom and German
+words; sizes; motion; the phone menu; picture descriptions; speed; the legal links and the consent bar; the check
+before handing over.
 
 ## The rules that come first
 
@@ -24,9 +27,8 @@ phone. The design keeps both true. Each rule names the WCAG 2.2 criterion behind
 4. **Links say where they lead** (2.4.4, A): never a bare "mehr", "hier" or "weiterlesen".
 5. **Tap targets of 44 × 44 px** in menus, the footer and buttons. WCAG's minimum is 24 × 24 px (2.5.8, AA); 44 × 44 px
    is its enhanced level (2.5.5, AAA) and our standard.
-6. **Nothing moves on its own**, and motion respects the visitor's setting (2.2.2, A).
-7. **The legal links, where the site has legal pages, and the consent bar** visible and readable on every page, at
-   every width.
+6. **Motion respects the visitor's setting,** and nothing moves on its own for more than five seconds without a way to
+   pause it (2.2.2, A).
 
 ## What the platform draws around the design
 
@@ -70,11 +72,9 @@ html { scroll-padding-top: 5rem; } /* the sticky header's height */
 - The order of the markup is the order of the keyboard: never reorder with `order`, `row-reverse` or grid placement
   what is read in another order.
 
-## Headings and link words
+## Link words
 
-- One `<h1>` per page: the opening section's `data-heading`. Each section's `data-heading` an `<h2>`, cards and steps
-  inside it `<h3>`; never skip a level. Headings describe their section (2.4.6, AA).
-- Never a heading for its size alone, and never a large `<p>` for what is a heading.
+The headings' rules are in `search.md`; they also describe their section (2.4.6, AA).
 - Link words name their goal: "Fassadenanstrich ansehen", "Zum Kontaktformular". A card linking to a service page
   takes the service's name as its link.
 
@@ -106,7 +106,8 @@ At 320 px wide and with text at 200 %, nothing is cut off, overlaps or needs sid
 
 ## Motion
 
-- Nothing moves on its own: no autoplay, no carousels that turn, no parallax.
+How much moves follows the client (`look.md`, "Motion"); what holds whatever moves:
+- Nothing moves on its own for more than five seconds without a way to pause it, and nothing plays sound on its own.
 - Hover effects short (at most 0.2 s), and none of them carrying information.
 - Motion is opt-in, so a visitor who asked for less gets none:
 
@@ -172,15 +173,14 @@ layout shifts no more than 0.1.
 
 ## Legal links and the consent bar
 
-- Where the site has legal pages, the footer's `<ul data-slot="legal-links">` is visible and readable on every page
-  and at every width: never `display: none`, a tiny size, a faint colour, or a place off the screen.
-- On a phone, the footer's columns stack, and the legal links keep at least 44 px between them.
+- They stay visible and readable at every width (`SKILL.md`). On a phone, the footer's columns stack, and the legal
+  links keep at least 44 px between them.
 - The consent bar must show above everything on the first visit. Where the site asks for consent, the legal links hold
   "Cookie-Einstellungen", which opens it again: keep it with them.
 
 ## Check before handing over
 
-At 320, 390 and 1440 px, in the Studio's preview:
+At 320, 390 and 1440 px, looking as `SKILL.md` says (rule 11):
 - nothing scrolls sideways at 320 px, and with the browser's text at 200 % nothing is cut off;
 - tab through a page: every stop shows its ring, in reading order, never under the sticky header;
 - open the phone menu and reach every page, those listed under another included;
@@ -189,11 +189,5 @@ At 320, 390 and 1440 px, in the Studio's preview:
 - read every link's words alone: each says where it leads;
 - look at each picture's description in the library.
 
-`interface-rules.md` beside this file is the longer checklist, from Vercel's interface rules, trimmed to what a design
-without scripts can do.
-
-## Sources
-
-Rules adapted from Jakub Krehel's skills, Vercel's web interface guidelines and Addy Osmani's web-quality-skills (MIT),
-with every WCAG number checked against WCAG 2.2; the picture descriptions follow ideas from Mike Gifford's
-image-alt-text, in our own words. The exact versions are in the plugin's THIRD-PARTY.md.
+Write what the check found into the handover, so a step left out shows: the keyboard pass, each stop with its ring in
+reading order, and every pair of words and ground with its measured ratio ("Text #1d2a24 on #f6f3ec: 13.45:1").

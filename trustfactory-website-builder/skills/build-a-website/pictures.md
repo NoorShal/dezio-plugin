@@ -21,7 +21,7 @@ a demanding customer would and puts it in place. A place it can't fill well stay
    such as a shop or a car wash, sets none, and its pictures are checked as any small business's.
 2. **The places:** `content-read` with `page.list_picture_places`, page by page: every picture field of its sections
    and list items, and whether it holds a picture yet.
-3. **The pictures from the current site,** where `picture.import_from_site` took them (`build-a-custom-site`):
+3. **The pictures from the current site,** where `picture.import_from_site` took them (`SKILL.md`, step 2):
    `template_sites-read` with `picture.get_contact_sheet` shows them as one image of numbered thumbnails, up to 30 a
    sheet, and lists each number's file id, the page and heading it stood under, its old description and its size
    class; its `next_cursor`, passed as `after`, shows the next sheet. The numbers start again on each sheet, so keep a
@@ -64,7 +64,7 @@ a demanding customer would and puts it in place. A place it can't fill well stay
 
 - **`shape`:** the shape the design draws the field in. `wide` (3:2) for an opening or a wide band, `card` (4:3) for
   cards and tiles, `square` (1:1), `portrait` (4:5) for a person or a tall subject; the place's frame crops the rest.
-- **`alt`:** German, under 150 characters, one sentence of what the picture shows, as `accessibility-and-phone`
+- **`alt`:** German, under 150 characters, one sentence of what the picture shows, as `accessibility.md`
   ("Picture descriptions") has it: "Geölter Eichentisch in der Werkstatt, daneben ein Hobel". Where the picture sits
   right beside the name it shows, such as a service's card, mark it decorative in the library afterwards
   (`core-file-write`).

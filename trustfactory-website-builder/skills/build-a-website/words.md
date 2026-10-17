@@ -1,15 +1,13 @@
 ---
-name: copy-for-local-business
-description: "Writes and edits the German words of a local business's website, of any kind - a trade, a practice, a shop - in formal Sie - headings, the opening, service pages, calls to action, reviews, job ads and the closing call - from the business's own facts only, marking anything missing as [FEHLT: …] instead of inventing it, with real reviews only and a check for phrases that read as machine-written. Use whenever a custom site's page text is written, rewritten or reviewed."
 license: Contains material adapted from Corey Haines' marketingskills (MIT). See THIRD-PARTY.md in the plugin.
 metadata:
   source: "https://github.com/coreyhaines31/marketingskills skills/copywriting, skills/copywriting/references/ai-tells.md, skills/copy-editing, skills/cro"
   commit: "c7d7dfb6b460fc376b4b2204b78a9c9fd5ca6467"
   sha256: "copywriting ecb4693fba9cc4f8, ai-tells 048a436d35d01131, copy-editing d23184ad62cbe29f, cro 6e172cc38178c800"
-  changes: "Rewritten by Trustfactory for German local businesses in formal Sie: the missing-fact marker, the review rules, the German phrase list and the claim check are ours; the SaaS framing, humour, rhetorical questions and unsourced statistics are left out."
+  changes: "Rewritten by Trustfactory for German local businesses, in \"Sie\" unless the client chooses \"du\": the missing-fact marker, the review rules, the German phrase list and the claim check are ours; the SaaS framing, humour, rhetorical questions and unsourced statistics are left out."
 ---
 
-# Words for a local business
+# Words
 
 The visitor wants to know whether this business does their job, here, soon, and whether it can be trusted. Every
 sentence answers part of that with a fact about this business. A sentence that would fit any competitor's page is
@@ -21,9 +19,11 @@ rewritten or cut.
    rating and place comes from what the business told us: its details (`core-read` with `business_details.get`), the
    brief, or the client in writing. Where a sentence needs a fact we don't have, write the sentence with the marker
    `[FEHLT: …]` naming what is missing, such as `[FEHLT: Gründungsjahr]` or `[FEHLT: Preis für einen Fassadenanstrich
-   ab]`. Never invent, estimate or round up. No page goes live with a marker left in it.
-2. **Formal "Sie", everywhere.** Never "du", never a mix. "Sie", "Ihr", "Ihnen" with a capital letter.
-3. **Real reviews only,** exactly as written: from the Google listing through the template's `google_reviews`
+   ab]`. Never invent, estimate or round up. The page is saved with its markers, and the publish check stops it until
+   each is filled or its sentence goes.
+2. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout: never
+   a mix. "Sie", "Ihr", "Ihnen" with a capital letter.
+3. **Real reviews only,** exactly as written: from the Google listing through the `google_reviews`
    section, or reviews the client hands over with the reviewer's first name or initial, the place and the platform.
    A rating is shown with its platform, the number of reviews and the date it was read. Never write, shorten into new
    words, or "improve" a review.
@@ -48,8 +48,8 @@ Collect, and keep beside the draft:
 One sentence on what the business does and for whom. The phone number as a button, and the enquiry.
 
 **A service page.** The heading names the service and the place: "Fassadenanstrich in Regensburg". Then what the job
-is, how it goes in three to five steps, what decides the price, where it is done, what it costs where the business
-names a price, and its questions. End with the call.
+is, how it goes in the steps the business named, what decides the price, where it is done, what it costs where the
+business names a price, and its questions. End with the call.
 
 **Über uns.** The story in facts: who started the business, when, where; the team; the qualifications by their names
 ("Malermeister", "Mitglied der Handwerkskammer Niederbayern-Oberpfalz"). No "Leidenschaft", no "Tradition trifft
@@ -99,16 +99,13 @@ A reader who meets one doubts the facts around it. Never write:
 ## The claim check
 
 Before handing a page over, and after every rewrite:
-1. List every number, name, date, price, place and promise on the page, and find each in the business's facts.
-   Anything not found becomes `[FEHLT: …]` or goes.
+1. List every number, name, date, price, place and promise on the page, every kind of job it takes and every step of
+   how the work is done, and find each in the business's facts. A kind of job or a step the business didn't name, such
+   as business premises, a wallpaper the customer picks, how it prepares a surface or what it takes away, is a claim
+   like any other. Anything not found becomes `[FEHLT: …]` or goes.
 2. Compare with the previous draft: a rewrite never changes a number, a name or a date, and never adds a fact.
 3. Read every sentence over 20 words; split any that carries more than one claim.
-4. Search the page for "du", "dein", "euch": none may remain outside a quoted review.
+4. The page addresses the reader one way throughout, "Sie" or the client's chosen "du", a quoted review aside.
 5. Apply the swap test to every heading: would it work unchanged for the nearest competitor? Rewrite it from the list
    of things only this business has.
 6. Read the page aloud. Anywhere it sounds like an advertisement, put a fact in place of the sound.
-
-## Where the rest lives
-
-The page titles, descriptions and headings for search: `seo-for-local-business`. The pages and their order:
-`local-business-design`. Link words and picture descriptions for screen readers: `accessibility-and-phone`.

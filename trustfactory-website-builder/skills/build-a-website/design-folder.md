@@ -1,11 +1,12 @@
----
-name: design-a-custom-site
-description: Design a Website Studio custom site page by page in a local design folder - its header, footer, stylesheet and its own section types with HTML markup - pushed to the site's drafts and checked in the Studio's preview. Use when building or changing the look of a custom site.
----
+# The design folder
 
-# Design a custom site
+A custom site's header, footer, stylesheet and section types, in a local folder pushed to the site's drafts and looked
+at in the Studio's preview. The site must be a custom site with a design folder (`SKILL.md`, step 1).
 
-The site must be a custom site with a design folder (the `connect-a-site` skill). The folder holds `studio.json` and:
+Contents: the folder's files; the working loop; a section type; bindings; what markup may hold; the stylesheet, with
+the editor's canvas, the site's own look, its variables, fonts, the platform's sections and the contact block.
+
+The folder holds `studio.json` and:
 
 ```
 design/header.html          what stands above every page
@@ -22,10 +23,10 @@ design/fonts/<name>.woff2   a font file of the brand's, which the stylesheet's f
    them as the site's draft design, answering the preview's address, or each refusal as
    `design/<file>:<line> what to change`.
 2. Fix every refusal and push again before going on: a refused push keeps the design saved before it.
-3. Write the pages with `content-write`, using the site's own section types and the template's (the forms).
-4. Look at the result in the Studio's preview (the address `design_push` answers), reloaded by hand. Nothing goes
-   public until the site is published. Judge motion there or through a share link: the Studio's editor runs no
-   scripts, so it shows each section still.
+3. Write the pages with `content-write`, in the site's own section types and the platform's (`SKILL.md`, rule 5).
+4. Look at the result at the preview's address `design_push` answers, reloaded after the push, as `SKILL.md` says
+   (rule 11). Nothing goes public until the site is published. Judge motion there or through a share link: the
+   Studio's editor runs no scripts, so it shows each section still.
 
 In a terminal, `node ${CLAUDE_PLUGIN_ROOT}/scripts/studio.mjs dev` in the folder pushes on every save instead; it reads
 the key from `TF_STUDIO_KEY`.
@@ -33,12 +34,9 @@ the key from `TF_STUDIO_KEY`.
 Each prompt given inside the folder is kept with the site, with its Claude Code session, by the plugin's hook, so the
 design can be followed back to what was asked; `template_sites-read` with `design_prompt.list` reads them.
 
-Every push that changes the design is kept as a numbered version, the newest 20; a run of your pushes within a
-minute is one version, under the last one's number, and past 10 versions in an hour a push takes the newest one's
-place, so a version stands for a step you meant. `template_sites-read` with
-`design_version.list` lists them, and `template_sites-custom` with `custom_design.roll_back` and a version's number
-takes the design back to it, saved again as the newest; the Studio's Design tab shows and restores them too. A client
-who edits the site may push and restore as well, so look at the list before a push that builds on an older state.
+Every push that changes the design is kept as a version (`template_sites-read` with `design_version.list`), and
+`template_sites-custom` with `custom_design.roll_back` takes the design back to one. Someone else may have pushed or
+restored meanwhile: look at the list before a push that builds on an older state.
 
 To start from the design saved in the Studio, call `design_pull`. A push sends the whole folder: a section type left
 out is removed, refused while a page still holds one.
@@ -93,6 +91,7 @@ and a `label`), `image`, and `repeater` (with `min_items`, `max_items` and its i
 a type's fields change, the push raises its version and moves every page's sections of it to the new fields, keeping
 each value whose field is still there and still takes it.
 
+A type's name is its own: never one of the platform's types, which `content-read` with `section_type.list` names.
 Keys, the type's own and each field's and option's, are lowercase letters, digits and underscores, starting with a
 letter. The platform keeps 29 names for its own fields and requests, so a key takes another: `id`, `site_id`,
 `type_id`, `category_id`, `slug`, `name`, `status`, `path`, `values`, `language`, `translations`, `locale`,
@@ -270,6 +269,6 @@ its form, the points in a row:
 }
 ```
 
-Where the site has legal pages, their links in the footer stay visible and readable on every page, at every width, as
-does the consent bar: no check sees a stylesheet hide them. Never give them `display: none`, `visibility:
-hidden`, a size of nothing, a place off the screen, or a colour too faint to read, and never cover them.
+The legal links and the consent bar stay visible and readable at every width (`SKILL.md`): no check sees a stylesheet
+hide them, so never give them `display: none`, `visibility: hidden`, a size of nothing, a place off the screen or a
+colour too faint to read, and never cover them.

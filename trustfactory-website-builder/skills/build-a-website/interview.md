@@ -7,9 +7,6 @@ Where an answer is a choice (the legal form, which pages, the style), ask with t
 where it has one, such as Claude Code's `AskUserQuestion`: up to four choices, any other answer typed. Free text is
 asked in plain chat.
 
-Every site is a real business's. Ask for its facts; where one isn't given, ask again later or mark it `[FEHLT: …]`
-where a page needs it.
-
 ## First: is there a website?
 
 Ask whether the business has a website now. If it has, offer to read it: `template_sites-write` with `prefill.start`.
@@ -48,15 +45,14 @@ stops.
 5. **Which pages** beside the home page, as choices to tick: Leistungen (with a page per service), Über uns, Karriere,
    Blog.
 6. **Legal pages,** a plain yes or no: does the site get our imprint, privacy policy and accessibility statement,
-   written for German law, in German? On a yes, add them (`connect-a-site`, step 5); the imprint then needs the
+   written for German law, in German? On a yes, add them (`SKILL.md`, step 1); the imprint then needs the
    details of groups 1 to 3. On a no, the business may give its own texts, written as pages of the site and marked as
    its legal pages, or have none.
 
 ## At the end
 
 - Where the site has our imprint, `core-read` with `business_details.get`: say what `missing_for_imprint` still
-  lists, in plain words ("the imprint still needs your phone number before the site can go live"). A site can be built
+  lists, in plain words ("the imprint still needs your phone number before the site can be published"). A site can be built
   with gaps, but not published while our imprint lacks a detail it draws.
 - Ask: "Anything else the site should say or show?"
-- The style: offer three directions, one line each, and the person picks one. `local-business-design` then plans the
-  chosen one.
+- The style: offer three directions, one line each, and the person picks one. `look.md` then plans the chosen one.
