@@ -4,7 +4,7 @@ A custom site's header, footer, stylesheet and section types, in a local folder 
 at in the Studio's preview. The site must be a custom site with a design folder (`SKILL.md`, step 1).
 
 Contents: the folder's files; the working loop; a section type; bindings; what markup may hold; the stylesheet, with
-the editor's canvas, the site's own look, its variables, fonts, the platform's sections and the contact block.
+the editor's canvas, the site's own look, its variables, fonts, the platform's sections, the contact block and posts.
 
 The folder holds `studio.json` and:
 
@@ -268,6 +268,13 @@ its form, the points in a row:
   gap: 1rem 2rem;
 }
 ```
+
+**Posts:** a post's page and the list of posts are the platform's, drawn between the design's header and footer, a
+post's sections in the design's own types and the post's blocks. Restyle them by these classes: `post-page` (the
+post's article), `post-head` (its head: the posts' name, the title, the teaser and the day), `post-meta` (the day),
+`post-cover` (its cover picture), `post-body` (its sections), `post-back` (the way back to all posts), and on the list
+`post-list-head` (its heading and lead), `post-list` (the cards), `post-card` (one post) and `post-pager` (newer and
+older). A design that styles none of them shows the posts in the base's plain look and the site's variables.
 
 The legal links and the consent bar stay visible and readable at every width (`SKILL.md`): no check sees a stylesheet
 hide them, so never give them `display: none`, `visibility: hidden`, a size of nothing, a place off the screen or a

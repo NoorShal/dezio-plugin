@@ -46,7 +46,8 @@ German law, in German, from the business's details at each publish.
   every business detail you have; leave out the wizard's steps, which a custom site doesn't need. Then
   `template_sites-write` with `site.set_up`, the base every custom site stands on.
 - **An existing template site** keeps its record, its pages and its client's access; its template pages stay and are
-  rewritten with the new section types.
+  rewritten with the new section types. Until they are, the publish check suggests each template section by name,
+  as the design doesn't style it.
 - Choose the design folder, the session's working folder or a new folder in it, and call `design_init` with the
   site's id and the folder's absolute path: it makes the site custom, with a first design and the contact page, and
   pulls the design into `design/`.
