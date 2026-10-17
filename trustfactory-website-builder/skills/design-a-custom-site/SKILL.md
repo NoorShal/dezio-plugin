@@ -79,7 +79,7 @@ out is removed, refused while a page still holds one.
   <h2 data-heading data-text="heading"></h2>
   <ul class="cards">
     <li class="card" data-each="items">
-      <img data-image="picture" data-if="picture" />
+      <img data-image="picture" data-if="picture" sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 50vw, 100vw" />
       <h3 data-text="title"></h3>
       <div data-rich="text" data-if="text"></div>
     </li>
@@ -124,6 +124,9 @@ page doesn't show.
 - `data-text="<field>"`: a text or e-mail field's text, on an empty element that holds text.
 - `data-rich="<field>"`: a rich text, on an empty `<div>`.
 - `data-image="<field>"`: a picture, on `<img>` (the only way to show one: a design holds no pictures of its own).
+  Give it `sizes`, the width the design's own grid draws it at in each layout, such as
+  `sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 50vw, 100vw"` for cards three, two and one across: the browser
+  fetches the file for that width. Without it the picture is fetched as wide as the screen, and the push suggests it.
 - `data-href="<field>"`: a URL or e-mail field as the link of an `<a>` without `href`.
 - `data-each="<repeater>"`: the element once per item; inside it, bindings name the item's fields. It binds nothing else.
 - `data-if="<field>"`: the element only where the field has a value (a boolean: yes).

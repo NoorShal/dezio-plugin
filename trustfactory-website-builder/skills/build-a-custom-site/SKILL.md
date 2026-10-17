@@ -97,12 +97,17 @@ a form, fetch the Google reviews, move by the platform's own script). They take 
 
 ## 5. Checks, then publishing
 
-1. **Search:** every page against `seo-for-local-business`: its title, description, one main heading, link words and
+1. **Pictures, every place filled:** once the pages are written, before any other check and without being asked.
+   `content-read` with `page.list_picture_places` on each page; the current site's and the client's photos first,
+   then one `template_sites-pages` `picture.make` for every place still empty, up to 30 at once, its cost shown and
+   confirmed once; a bigger site asks a second time (`local-business-design`, `pictures.md`). A site shown with empty
+   places looks unfinished.
+2. **Search:** every page against `seo-for-local-business`: its title, description, one main heading, link words and
    described pictures.
-2. **Accessibility and the phone:** the checks at the end of `accessibility-and-phone`, at 320, 390 and 1440 px.
-3. **Words:** no `[FEHLT: …]` left, and every number, year, price and review backed by the business's facts
+3. **Accessibility and the phone:** the checks at the end of `accessibility-and-phone`, at 320, 390 and 1440 px.
+4. **Words:** no `[FEHLT: …]` left, and every number, year, price and review backed by the business's facts
    (`copy-for-local-business`).
-4. **What stops a publish:** `template_sites-read` with `publish.get_problems`. Fix each problem; `common-mistakes`
+5. **What stops a publish:** `template_sites-read` with `publish.get_problems`. Fix each problem; `common-mistakes`
    has the usual ones.
-5. **Publish:** `template_sites-publish` with `site.publish`. `template_sites-read` with `publish.get_status` follows
+6. **Publish:** `template_sites-publish` with `site.publish`. `template_sites-read` with `publish.get_status` follows
    it going live. If something is wrong, `site.roll_back` serves the previous publish again at once.

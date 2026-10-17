@@ -360,9 +360,9 @@ async function addFonts(dir, site) {
 }
 
 /**
- * Saves the folder's design as the site's draft design, its new font files added first: what was saved and where to
- * look at it, in lines. A refusal throws `Refused`, naming each file and line to change, or each font file with the
- * link to approve it at.
+ * Saves the folder's design as the site's draft design, its new font files added first: what was saved, what the design
+ * may want to change, and where to look at it, in lines. A refusal throws `Refused`, naming each file and line to
+ * change, or each font file with the link to approve it at.
  */
 export async function push(dir) {
   const site = await siteOf(dir);
@@ -372,6 +372,8 @@ export async function push(dir) {
   const types = saved.section_types.length === 0 ? 'none' : saved.section_types.join(', ');
   return [
     `Saved at ${new Date().toLocaleTimeString()}. Own section types: ${types}.`,
+    // What the design may want to change, which never stopped the save.
+    ...saved.suggestions.map(({ detail }) => `Suggestion: ${detail}`),
     `Preview: ${new URL(`/sites/${encodeURIComponent(site)}/preview`, settings().admin).href}`,
     ...(await sentPrompts(dir, site)),
   ];

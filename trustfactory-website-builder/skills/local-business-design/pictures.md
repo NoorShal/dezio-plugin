@@ -35,8 +35,9 @@ a demanding customer would and puts it in place. A place it can't fill well stay
 4. **The client's own photos:** real photos of their work, team, premises or vehicles beat any made one. Add them
    with the design folder's `design_upload`, each with its alt text, and put each in its place with `content-write`
    (`page.save`, the field's value the file's id).
-5. **The rest:** `template_sites-pages` with `picture.make`, up to ten places at once, each with its `scene`, `alt`
-   and `shape`. It says first what it will cost, then is confirmed. `template_sites-read` with `picture.get_made` says
+5. **The rest:** `template_sites-pages` with `picture.make`, every place still empty in one request, up to 30, each
+   with its `scene`, `alt` and `shape`; a bigger site makes a second request. It says first what it will cost, then is
+   confirmed. `template_sites-read` with `picture.get_made` says
    what came of each place: placed, refused with the check's reason, not made in time, a picture put there
    meanwhile, or the place gone.
 6. **A refused place:** read the check's reason, write the scene again calmer (below), and ask once more.
