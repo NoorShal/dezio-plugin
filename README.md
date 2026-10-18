@@ -1,7 +1,8 @@
 # Trustfactory website builder
 
 Build and change websites on Trustfactory's Website Studio by talking to Claude. The plugin gives Claude the Studio's
-tools, our guides for design and writing, and a design folder on your computer that stays in step with the Studio.
+tools, how our platform works and the rules every site keeps, and a design folder on your computer that stays in step
+with the Studio.
 
 ## Before you start
 
@@ -28,8 +29,8 @@ store, and nobody sees it again.
 
 Claude Desktop can also add the plugin to its chats: open **Customize**, then the **Plugins** tab, choose **Add**, then
 **Add marketplace**, and under **Add from a repository** enter `NoorShal/trustfactory-website-builder`. Then find the
-plugin under **Discover** and choose **Add**. In a chat, Claude has our guides; for building and changing a site, use
-the Code tab as above.
+plugin under **Discover** and choose **Add**. In a chat, Claude knows the platform and its rules; for building and
+changing a site, use the Code tab as above.
 
 ## One plugin, nothing to add by hand
 

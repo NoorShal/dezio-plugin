@@ -1,11 +1,8 @@
 # The interview
 
-How to gather the business's facts where the brief doesn't hold them: short, in the client's language, and never more
-than four questions at once. Ask nothing the brief or the current website already answered.
-
-Where an answer is a choice (the legal form, which pages, the style), ask with the app's multiple-choice question tool
-where it has one, such as Claude Code's `AskUserQuestion`: up to four choices, any other answer typed. Free text is
-asked in plain chat.
+Ask only what the brief and the current website don't answer, in the client's language, at most four questions at
+once. A choice (the legal form, which pages) is asked with the app's multiple-choice question tool where it has one,
+such as Claude Code's `AskUserQuestion`: up to four choices, any other answer typed. Free text is asked in plain chat.
 
 ## First: is there a website?
 
@@ -18,9 +15,8 @@ below only for what is still missing. Offer to take its pictures as well (`pictu
 ## Then, in small groups
 
 Before each group, say which answers the site needs and which are optional; our imprint, where the client chooses it,
-needs the legal ones.
-After each group, save the answers with `core-site-update` (`business_details.set`), so nothing is lost if the talk
-stops.
+needs the legal ones. After each group, save the answers with `core-site-update` (`business_details.set`), so nothing
+is lost if the talk stops.
 
 1. **Who:** the business's registered name, its legal form and the person responsible for it (the owner, or who
    represents the company). All needed. The legal form as choices: Einzelunternehmen oder freier Beruf, GmbH,
@@ -52,7 +48,7 @@ stops.
 ## At the end
 
 - Where the site has our imprint, `core-read` with `business_details.get`: say what `missing_for_imprint` still
-  lists, in plain words ("the imprint still needs your phone number before the site can be published"). A site can be built
-  with gaps, but not published while our imprint lacks a detail it draws.
+  lists, in plain words ("the imprint still needs your phone number before the site can be published"). A site can be
+  built with gaps, but not published while our imprint lacks a detail it draws.
 - Ask: "Anything else the site should say or show?"
-- The style: offer three directions, one line each, and the person picks one. `look.md` then plans the chosen one.
+- Then the three directions for the look (`SKILL.md`, step 3).

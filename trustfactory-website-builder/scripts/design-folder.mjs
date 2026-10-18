@@ -14,6 +14,9 @@ const ONLINE = { api: 'https://website-studio-api.vercel.app', admin: 'https://w
 
 const FRAME = { header: 'header.html', footer: 'footer.html', stylesheet: 'stylesheet.css' };
 
+/** The design's script for the whole page, where it has one, beside the frame: design/page.js. */
+const PAGE_SCRIPT = 'page.js';
+
 /** A pointer's steps (RFC 6901), each as the name or the index it says. */
 function stepsOf(pointer) {
   return pointer
@@ -147,11 +150,14 @@ async function readDesign(dir) {
       ...(script === undefined ? {} : { script }),
     });
   }
+  const pageFile = join(design, PAGE_SCRIPT);
+  const pageScript = existsSync(pageFile) ? await read(pageFile) : undefined;
   return {
     header: await read(join(design, FRAME.header)),
     footer: await read(join(design, FRAME.footer)),
     stylesheet: await read(join(design, FRAME.stylesheet)),
     section_types: sectionTypes,
+    ...(pageScript === undefined ? {} : { page_script: pageScript }),
     fonts: (await readFonts(dir)).map(({ name, hash }) => ({ name, hash })),
   };
 }
@@ -182,6 +188,9 @@ function placeInDesign(design) {
     if (Object.hasOwn(FRAME, part) && index === undefined) {
       return `design/${FRAME[part]}`;
     }
+    if (part === 'page_script') {
+      return `design/${PAGE_SCRIPT}`;
+    }
     if (part === 'fonts') {
       const font = design.fonts[Number(index)];
       return font === undefined ? 'design/fonts' : `design/fonts/${font.name}`;
@@ -207,8 +216,8 @@ function placeInDesign(design) {
 }
 
 /**
- * Writes the design's files as the Studio holds them; a type's script file goes where the Studio's type has none, so a
- * later push never brings back a script the design no longer holds.
+ * Writes the design's files as the Studio holds them; a script file, the page's or a type's, goes where the Studio's
+ * design has none, so a later push never brings back a script the design no longer holds.
  */
 async function writeDesign(dir, source) {
   const sections = join(dir, 'design', 'sections');
@@ -216,6 +225,8 @@ async function writeDesign(dir, source) {
   for (const [part, file] of Object.entries(FRAME)) {
     await writeFile(join(dir, 'design', file), source[part]);
   }
+  const pageFile = join(dir, 'design', PAGE_SCRIPT);
+  await (source.page_script === undefined ? rm(pageFile, { force: true }) : writeFile(pageFile, source.page_script));
   for (const { definition, markup, holds, script } of source.section_types) {
     const file = holds === undefined ? definition : { ...definition, holds };
     await writeFile(join(sections, `${definition.type}.json`), `${JSON.stringify(file, null, 2)}\n`);

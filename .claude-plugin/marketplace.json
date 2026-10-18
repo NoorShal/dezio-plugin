@@ -10,7 +10,7 @@
     {
       "name": "trustfactory-website-builder",
       "source": "./trustfactory-website-builder",
-      "description": "Build custom websites on Website Studio from Claude Code: the Studio's tools, the design guide, and a design folder pushed to a site's drafts."
+      "description": "Build custom websites on Website Studio from Claude Code: the Studio's tools, its rules, and a design folder pushed to a site's drafts."
     }
   ]
 }

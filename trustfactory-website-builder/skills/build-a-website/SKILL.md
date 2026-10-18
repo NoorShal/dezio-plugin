@@ -1,6 +1,7 @@
 ---
 name: build-a-website
 description: Builds and changes websites for businesses on Website Studio with this plugin's tools, never as a local framework project - the business's own facts, a custom design pushed from the design folder, the home page approved through a share link, the subpages, words, pictures, search, accessibility, publishing and the own domain. Use whenever someone wants to build, redesign or change a website or homepage, its pages, words, pictures or look, for any kind of business ("Website erstellen", "Homepage bauen", "Seite ändern", "Texte für meine Webseite").
+license: Contains a few lines adapted from Anthropic's frontend-design and Paul Bakaus' impeccable (both Apache-2.0) and Corey Haines' marketingskills (MIT). See THIRD-PARTY.md in the plugin.
 ---
 
 # Build a website
@@ -9,14 +10,19 @@ description: Builds and changes websites for businesses on Website Studio with t
 
 1. **Website Studio, with this plugin's tools,** never a local framework project or a site coded in a folder. Any
    business may have one: a trade, a practice, a shop, a car wash, a café.
-2. **Only the business's own facts.** A number, a year, a price, a name, a review, a place served, a kind of job it
-   takes or a step of how it works stands on a page only where the business gave it. Anything a page needs that it didn't give is marked
-   `[FEHLT: …]` and asked for (`words.md`, "The claim check").
-3. **Words are saved as drafts, their markers in them,** with `content-write` as each page is written, never left in
-   the chat alone: the Studio holds them, the share link shows them to the client, and the publish check stops a page
-   that still holds a marker.
-4. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout, the
-   site set to it (`core-site-update`, `site.set_address_form`), so the platform's own texts say "du" too.
+2. **Only the business's own facts.** A number, a year, a price, a promise, a name, a review, a rating, a place
+   served, a kind of job it takes or a step of how it works stands on a page only where the business gave it: in its
+   details (`core-read` with `business_details.get`), the brief, or the client's own words; never invented, estimated
+   or rounded up. No page suggests an office or a workshop where the business has none. Where a sentence needs a fact
+   the business didn't give, leave the sentence out and note the fact with `template_sites-pages` `facts.ask`, with
+   the page's id and the fact in the client's words, such as "Gründungsjahr": the share link's bar lists it for the
+   client, never the page. Once the client gives it, write the sentence and take the fact off with `facts.done`. A
+   marker such as `[FEHLT: …]` left in a text stops a publish. Step 6, check 4, is the claim check.
+3. **Words are saved as drafts** with `content-write` as each page is written, never left in the chat alone: the
+   Studio holds them, and the share link shows them to the client.
+4. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout, never
+   mixed (a quoted review aside), the site set to it (`core-site-update`, `site.set_address_form`), so the platform's
+   own texts say "du" too.
 5. **The design's own section types,** beside the platform's three, the Google reviews, before and after, and the
    video, and our legal pages where the client chose them; the contact form, the job application form and the map
    stand in the design's own sections through their slots (`design-folder.md`). Those do what a design can't.
@@ -31,13 +37,19 @@ description: Builds and changes websites for businesses on Website Studio with t
     conversation was compacted.
 11. **Looking at a page:** with Claude in Chrome where it is connected, at 390 and 1440 px wide. Without it,
     `template_sites-custom` with `page.look` draws a page at 390 and 1280 px in a job, and `template_sites-read` with
-    `page.get_look` shows each part of it and what the browser found; never a browser program of your own.
+    `page.get_look` shows each part of it as a visitor sees it scrolled there, what moves on the scroll where the
+    scroll puts it and motion on a timer at its end, and what the browser found; never a browser program of your own.
 12. **A key the Studio no longer takes:** where its tools answer 401, "Credential not accepted", ask the person to
     make a new key in the Studio under AI agents, enter it in the plugin's options
     (`/plugin configure trustfactory-website-builder@website-studio`), then restart Claude Code.
+13. **The site meets WCAG 2.2 at levels A and AA,** as our accessibility statement says where the site has it; the
+    page look's findings name what it misses. Visitors who ask their device for less motion get a calm version. What
+    moves by itself for more than five seconds beside the content can be paused, or ends by itself. Motion the visitor
+    drives, by scrolling, dragging or a click, is free.
 
-The plugin keeps each prompt typed in a site's design folder with that site in the Studio, where its editors can read
-them, so the design can be traced back to what was asked and faults looked into; tell the person so when they ask.
+The plugin keeps each prompt typed in a site's design folder, and its Claude Code session, with that site in the
+Studio, where its editors can read them (`template_sites-read` with `design_prompt.list`), so the design can be traced
+back to what was asked and faults looked into; tell the person so when they ask.
 
 ## 1. Set up the site
 
@@ -83,12 +95,18 @@ Read `interview.md` when this step starts.
 
 ## 3. The home page, until the client approves it
 
-Read `look.md` and `words.md` before planning, `design-folder.md` before building (with `scripts.md` for anything that
-moves or opens), and `pictures.md` for its pictures.
+Read `design-folder.md` before building (with `scripts.md` for anything that moves or opens), and `pictures.md` for
+its pictures.
 
-- Plan the look and the page, and check the plan against the brief before any code: a look of the business's own,
-  never one of our templates'. A high-end brief starts with two or three reference sites and an approved first screen
-  (`look.md`).
+- **Three directions first:** offer three really different directions, one line each (the idea that carries the page,
+  the colours, the type), and the person picks one; with nobody to ask, choose one and say why. The look is the
+  business's own, never one of our templates'.
+- **Looks that read as generated,** avoided unless the brief asks for them: a cream ground with a terracotta accent,
+  or near-black with one acid accent; identical rounded cards with the same soft shadow as the page's structure, cards
+  inside cards; a small all-caps label above every heading; numbered markers (01 / 02 / 03) on things that aren't a
+  sequence; one word of a heading in another colour or italics; gradient text; glass and blur as decoration; "→"
+  after every link; meta lines joined with middle dots; a monospace face for labels; a big number with a small label
+  as the hero.
 - Build the header, footer, stylesheet and section types in the design folder, and push them with `design_push` after
   each change. A refused push names the file, the line and what to change.
 - Make the home page with `content-write` (`page.create` with the slug `""`, where the site has none), then write it
@@ -97,25 +115,25 @@ moves or opens), and `pictures.md` for its pictures.
   Studio makes for the places left. The same for every subpage.
 - Show it to the client: `core-preview-link-create` makes a link that shows the drafts without a login, for 1 to 30
   days. It takes a key of the site's admin, and the link is shown once: hand it over as it is.
-- Change it until the client approves it. Every push is kept as a version (`template_sites-read` with
-  `design_version.list`), and `template_sites-custom` with `custom_design.roll_back` takes the design back to one.
+- Change it until the client approves it. Every push is kept as a version, and `custom_design.roll_back` takes the
+  design back to one (`design-folder.md`, "Working loop").
 
 ## 4. The subpages
 
 Read `search.md` when this step starts.
 
-- The pages, in `look.md`'s order: Leistungen, a page per service, Über uns, Karriere where the business is hiring,
-  and a page per town only where `search.md` allows one. Make each with `content-write` (`page.create`), then write
-  it (`page.save`) in the design's own section types; never with `template_sites-pages`' `page.add`, which writes the
-  template's sections and which a custom site refuses.
+- The pages the client chose (`interview.md`, group 5): Leistungen with a page per service, Über uns, Karriere where
+  the business is hiring. Make each with `content-write` (`page.create`), then write it (`page.save`) in the design's
+  own section types; never with `template_sites-pages`' `page.add`, which writes the template's sections and which a
+  custom site refuses.
 - The contact page, `kontakt`, made the same way: a section of the design's own with the form
   (`data-slot="contact-form"`), the business's details through `data-business`, never typed in, and the map
   (`data-slot="map"`) where the client wants one.
 - The menu: `page.move` orders it, and `page.set_menu_parent` lists a service's page under Leistungen, which its
   breadcrumb then reads ("Start > Leistungen > Fassadenanstrich"); two levels deep at most. A page the menu names gets
   built, or its item waits until it is.
-- The links lead to the site's own pages: the new site replaces the business's current one. Links elsewhere are for
-  other services: social profiles, maps, videos, the authorities the legal pages name.
+- The links lead to the site's own pages, as the new site replaces the business's current one; links elsewhere are
+  for other services (`design-folder.md`, "What markup may hold").
 - Share the link again; the client approves the subpages before the modules.
 
 ## 5. The modules
@@ -129,7 +147,9 @@ one on.
   (`data-slot="application-form"`), where the applicant writes the job, and a page for each job where there are several.
   Applications arrive in `core-read` (`form.list_submissions`, purpose `application`).
 - **Reviews:** `external_ratings-write` with `listing.set_link` names the business's Google listing and fetches its
-  reviews; the `google_reviews` section shows them. A review is never written by hand.
+  reviews; the `google_reviews` section shows them. Other reviews only as the client hands them over, exactly as
+  written, with the reviewer's first name or initial, the place and the platform; a rating with its platform, the
+  number of reviews and the date it was read. A review is never written, reworded or improved.
 - **Blog:** `blog-write` (`post.create`, `post.save`, `post.publish`). A post is online as soon as it is published; one
   holding a section type a design push added or changed since the last publish waits for the site's next publish, so
   publish it with the site.
@@ -139,19 +159,22 @@ one on.
 
 ## 6. Checks
 
-Read `accessibility.md` for check 3.
-
 1. **Every picture place filled,** once the pages are written, without being asked: `content-read` with
    `page.list_picture_places` on each page; the client's photos first, then one `template_sites-pages` `picture.make`
    for every place still empty, up to 30 at once, its cost shown and confirmed once (`pictures.md`). A site shown with
    empty places looks unfinished.
-2. **Search:** every page's title, description, one main heading, link words and described pictures (`search.md`).
-3. **Accessibility and the phone:** the handover check at the end of `accessibility.md`, at 320, 390 and 1440 px.
-4. **Words:** every number, year, price, place and step of the work backed by the business's facts (`words.md`), and
-   the `[FEHLT: …]` markers named to the client, who fills them or takes the sentence out.
+2. **Search:** every page's title, heading, search title and description, and its pictures described (`search.md`).
+3. **Accessibility and the phone:** rule 13 at 320, 390 and 1440 px wide, looking as rule 11 says; the legal links
+   and the consent bar read at each width.
+4. **The claim check,** before handing a page over and after every rewrite: list every number, name, date, price,
+   place and promise on the page, every kind of job it takes and every step of how the work is done, and find each in
+   the business's facts. A kind of job or a step the business didn't name, such as business premises, a wallpaper the
+   customer picks or what it takes away, is a claim like any other. Anything not found goes, its fact noted with
+   `facts.ask`. A rewrite never changes a number, a name or a date, and never adds a fact. `template_sites-read` with
+   `facts.list` lists what is still missing, which the client sees in the share link's bar; a publish names it
+   without stopping.
 5. **The handover:** the menu and the contact page are there, the legal pages the client chose, and the share link
-   shows the consent bar; nothing of our templates' look shows, a page, the contact page and a legal page opened side
-   by side with the plan.
+   shows the consent bar; nothing of our templates' look shows on a page, the contact page or a legal page.
 6. **What stops a publish:** `template_sites-read` with `publish.get_problems` names each problem, where it is and
    what to change: pages with `content-write`, pictures with `core-file-write`, the business's details with
    `core-site-update`.

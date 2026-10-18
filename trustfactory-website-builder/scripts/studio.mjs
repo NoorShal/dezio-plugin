@@ -16,10 +16,11 @@ const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
   dev             Pushes once, then again on every save, until stopped.
 
 The folder (default: the current one) holds studio.json, which names the site, and design/:
-  design/header.html, design/footer.html, design/stylesheet.css,
+  design/header.html, design/footer.html, design/stylesheet.css, and where the page moves as a whole, design/page.js
+  (its script, export function attach(parts, view), given every element the design marks data-page-part="<name>"),
   design/sections/<type>.json (the section type, and under "holds" the questions, services or job it shows, where
   it does) beside design/sections/<type>.html (its markup) and, where it moves, design/sections/<type>.js (its own
-  script, export function attach(root), given each element its markup marks data-script="<type>"),
+  script, export function attach(root, view), given each element its markup marks data-script="<type>"),
   design/fonts/<name>.woff2, the font files the stylesheet's font faces name, as url("fonts/<name>.woff2"), which a
   push adds to the site.
 
