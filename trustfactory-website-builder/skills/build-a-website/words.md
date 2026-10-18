@@ -21,8 +21,9 @@ rewritten or cut.
    `[FEHLT: …]` naming what is missing, such as `[FEHLT: Gründungsjahr]` or `[FEHLT: Preis für einen Fassadenanstrich
    ab]`. Never invent, estimate or round up. The page is saved with its markers, and the publish check stops it until
    each is filled or its sentence goes.
-2. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout: never
-   a mix. "Sie", "Ihr", "Ihnen" with a capital letter.
+2. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout, the
+   site set to it so its own texts follow (`SKILL.md`, rule 4): never a mix. "Sie", "Ihr", "Ihnen" with a capital
+   letter.
 3. **Real reviews only,** exactly as written: from the Google listing through the `google_reviews`
    section, or reviews the client hands over with the reviewer's first name or initial, the place and the platform.
    A rating is shown with its platform, the number of reviews and the date it was read. Never write, shorten into new

@@ -4,7 +4,8 @@ A custom site's header, footer, stylesheet and section types, in a local folder 
 at in the Studio's preview. The site must be a custom site with a design folder (`SKILL.md`, step 1).
 
 Contents: the folder's files; the working loop; a section type; bindings; what markup may hold; the stylesheet, with
-the editor's canvas, the site's own look, its variables, fonts, the platform's sections, the contact block and posts.
+the editor's canvas, the site's own look, its variables, fonts, the platform's sections, the forms and the map, and
+posts.
 
 The folder holds `studio.json` and:
 
@@ -14,7 +15,7 @@ design/footer.html          what stands below every page, with the legal pages' 
 design/stylesheet.css       the site's own stylesheet
 design/sections/<type>.json a section type of its own: its fields, and what it holds for search engines
 design/sections/<type>.html the markup it is drawn with
-design/fonts/<name>.woff2   a font file of the brand's, which the stylesheet's font faces name
+design/fonts/<name>.woff2   a font file, which the stylesheet's font faces name
 ```
 
 ## Working loop
@@ -203,8 +204,12 @@ The site's variables, all set by the design:
   `--site-text-h3`, `--site-text-body`;
 - shape: `--site-radius`, `--site-spacing`.
 
-**Fonts:** the brand's own, where it has them. Put each WOFF 2.0 file in `design/fonts/` (lowercase words joined by
-hyphens, at most 500 KB each, 12 per design) and name it in a font face, the only place a stylesheet may load a file:
+**Fonts:** a font pair of the platform's (`template_sites-write`, `design.set` with `font_pair`), drawn with
+`var(--site-font-heading)` and `var(--site-font-body)`, or files of the design's own: any font under an open licence,
+such as the SIL Open Font License, chosen on purpose, or the brand's own paid font once the client has said, asked
+once in the conversation, that their licence covers their website. Never a font file taken from anywhere without a
+licence that allows it. Put each WOFF 2.0 file in `design/fonts/` (lowercase words joined by hyphens, at most 500 KB
+each, 12 per design) and name it in a font face, the only place a stylesheet may load a file:
 
 ```css
 @font-face {
@@ -216,58 +221,32 @@ hyphens, at most 500 KB each, 12 per design) and name it in a font face, the onl
 :root { --site-font-heading: "Muster Sans", system-ui, sans-serif; --site-font-body: "Muster Sans", system-ui, sans-serif; }
 ```
 
-The site serves the files from its own host, so no visitor's browser asks another one. A font file new to the site
-goes there only once your person has approved it in the Studio, which asks whether its licence allows use on websites:
-the push stops with a link for each new file. Give them the link and what the push said, and push again once they have
-approved it. Never tell them a licence allows it unless they showed you the licence. Without brand fonts, choose the site's font pair on purpose (`template_sites-write`,
-`design.set` with `font_pair`) and draw with `var(--site-font-heading)` and `var(--site-font-body)`, in a type scale of
-the design's own.
+The push adds the files to the site, which serves them from its own host, so no visitor's browser asks another one.
+Either way, draw in a type scale of the design's own.
 
 **Sections:** the design draws its pages with section types of its own. Of the platform's, use only those that do
-what a design can't: the contact form (`contact_form`), the job application form (`application_form`), the Google
-reviews (`google_reviews`), a job's pictures before and after (`before_after`), a video from YouTube or Vimeo
-(`video`), whose player loads only once the visitor agrees, and our legal pages, where the client chose them. Restyle
-them through the site's variables above and the design's own rules: the before-and-after by its classes
-`before-after-frame`, `before-after-label`, `before-after-divider` and `--position`; the video by `video-frame`, its
-field of sixteen by nine, and `video-note`, the card on it until the player loads. The pages the site draws on its
-own, the one a sender lands on once a form or an application is sent and the page not found, stand between the
-design's header and footer as `<main class="notice">`: a heading, a line or two and the way home (`.button`), laid
-out plainly in the page's column; restyle them by `.notice`. The platform's buttons are `.button` with
+what a design can't: the Google reviews (`google_reviews`), a job's pictures before and after (`before_after`), a
+video from YouTube or Vimeo (`video`), whose player loads only once the visitor agrees, and our legal pages, where the
+client chose them. Restyle them through the site's variables above and the design's own rules: the before-and-after by
+its classes `before-after-frame`, `before-after-label`, `before-after-divider` and `--position`; the video by
+`video-frame`, its field of sixteen by nine, and `video-note`, the card on it until the player loads. The pages the
+site draws on its own, the one a sender lands on once a form or an application is sent and the page not found, stand
+between the design's header and footer as `<main class="notice">`: a heading, a line or two and the way home
+(`.button`), laid out plainly in the page's column; restyle them by `.notice`. The platform's buttons are `.button` with
 `.button-primary` (filled in the call colour) or `.button-secondary` (outlined); restyle them by those classes. The
 filled one's colours hold over a rule for every link (`a`, `a:hover`), so its words never take a link colour; to give
 it others, set them on `.button-primary` and on its `:hover`, `:focus-visible` and `:active` states. Questions and
 services a design shows in its own sections reach search engines through `holds`.
 
-**The contact block** (`contact_form`) takes the design's layout through these classes: `contact-block` (the grid;
-`contact-block-pair` where it holds two parts), `contact-words` (the heading, the line and the points),
-`contact-reasons` with `contact-reason-icon` and `contact-reason-text` (the points), `contact-map`, and
-`contact-form-card` with `contact-form-head` (the form). Its layout's `map` leaves the map out: `"hidden"`, set with
-`content-write` (`page.save`, the section's `layout`), and the words and the form stand side by side. Its words above
-its form, the points in a row:
-
-```css
-.contact-block,
-.contact-block-pair {
-  grid-template-columns: minmax(0, 1fr);
-  grid-auto-rows: auto;
-  max-width: 48rem;
-  margin-inline: auto;
-}
-
-.contact-words {
-  grid-column: auto;
-}
-
-.contact-words h2 {
-  font-size: clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
-}
-
-.contact-reasons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 2rem;
-}
-```
+**The forms and the map:** the contact page, the careers page and every closing call are section types of the
+design's own, the business's details in them through `data-business`, so they follow the details as they change. The
+platform draws only what a design can't safely: the working form and the map, each into an empty `<div>` the section
+marks, once: `data-slot="contact-form"`, `data-slot="application-form"` or `data-slot="map"`. A section holding one
+runs no script of its own, so nothing of the design's reaches what a visitor sends or agrees to: put what moves in a
+section beside it. A form posts to the site's enquiries or applications, in the site's "Sie" or "du", with its consent
+line and send button; the editor shows it without sending. Restyle it by `.site-form` (with `.contact-form` or
+`.application-form`), `.field-input`, `.form-consent`, `.button-primary` and the application's file drop
+`.application-drop`; the map by `.site-map` and `.map-frame`, which loads once the visitor agrees.
 
 **Posts:** a post's page and the list of posts are the platform's, drawn between the design's header and footer, a
 post's sections in the design's own types and the post's blocks. Restyle them by these classes: `post-page` (the

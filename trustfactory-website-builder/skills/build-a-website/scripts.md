@@ -57,8 +57,9 @@ script may use.
     `left`, `top`, `right`, `bottom`, `width` and `height`;
   - events, and what ends a listener: `addEventListener`, `removeEventListener`, `preventDefault`, `stopPropagation`,
     `target`, `currentTarget`, `type`, `key`, `code`, `repeat`, `shiftKey`, `altKey`, `ctrlKey`, `metaKey`, `button`,
-    `clientX`, `clientY`, `pageX`, `pageY`, `deltaX`, `deltaY`, `touches`, `changedTouches`, `pointerId`,
-    `setPointerCapture`, `releasePointerCapture`, `signal`, `abort` and `media`;
+    `clientX`, `clientY`, `pageX`, `pageY`, `deltaX`, `deltaY`, `pointerId`, `setPointerCapture`,
+    `releasePointerCapture`, `signal`, `abort` and `media`; a swipe or a drag listens for pointer events, as a touch
+    event's lists hold every finger on the screen;
   - lists, text and numbers: `length`, `at`, `item`, `forEach`, `map`, `filter`, `find`, `findIndex`, `some`, `every`,
     `includes`, `indexOf`, `push`, `pop`, `shift`, `unshift`, `slice`, `splice`, `join`, `reduce`, `from`, `isArray`,
     `trim`, `split`, `replace`, `replaceAll`, `startsWith`, `endsWith`, `padStart`, `toLowerCase`, `toUpperCase`,

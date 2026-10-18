@@ -1,6 +1,6 @@
 {
   "name": "trustfactory-website-builder",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "Build custom websites on Website Studio from Claude Code: the Studio's tools, the design guide, and a design folder pushed to a site's drafts.",
   "author": {
     "name": "Trustfactory"
@@ -9,7 +9,7 @@
     "studio_key": {
       "type": "string",
       "title": "Website Studio key",
-      "description": "The agent key made for you in Website Studio, under Agent keys. It is kept in your computer's secure store and never shown.",
+      "description": "The agent key made for you in Website Studio, under AI agents. It is kept in your computer's secure store and never shown.",
       "sensitive": true,
       "required": true
     }

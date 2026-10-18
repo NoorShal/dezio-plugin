@@ -9,8 +9,8 @@ import { init, pull, push, Refused } from './design-folder.mjs';
 
 const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
 
-  init <site id>  Makes the site a custom site (a first design and the contact page; safe to run
-                  again) and pulls its design into the folder.
+  init <site id>  Makes the site a custom site (a first design; safe to run again) and pulls its design
+                  into the folder.
   pull            Writes the site's design into the folder's design/ files.
   push            Saves the folder's design as the site's draft design; a refused file is named with its line.
   dev             Pushes once, then again on every save, until stopped.
@@ -20,9 +20,8 @@ The folder (default: the current one) holds studio.json, which names the site, a
   design/sections/<type>.json (the section type, and under "holds" the questions, services or job it shows, where
   it does) beside design/sections/<type>.html (its markup) and, where it moves, design/sections/<type>.js (its own
   script, export function attach(root), given each element its markup marks data-script="<type>"),
-  design/fonts/<name>.woff2, the font files the stylesheet's font faces name, as url("fonts/<name>.woff2"). A push
-  adds a font file new to the site only once you approved it in the Studio, at the link the push gives: approve it
-  only if the font's licence allows its use on websites. studio.json keeps the approvals still open.
+  design/fonts/<name>.woff2, the font files the stylesheet's font faces name, as url("fonts/<name>.woff2"), which a
+  push adds to the site.
 
 Settings, from the environment: TF_STUDIO_KEY, an agent key made in the Studio (never printed); TF_STUDIO_API, the
 Studio's API (default the online Studio, https://website-studio-api.vercel.app); TF_STUDIO_ADMIN, the Studio itself,

@@ -54,13 +54,19 @@ Ask for what you want, for example:
 
 ## A new key
 
-A key stops working when it ends or when you revoke it in the Studio. Make a new one there, then type:
+A key stops working when it ends or when you revoke it in the Studio; Claude then says the Studio didn't accept it.
+Make a new key in the Studio under **AI agents**, enter it in the plugin's options, then restart Claude Code. The
+options open with:
 
 ```
 /plugin configure trustfactory-website-builder@website-studio
 ```
 
-Paste the new key, and start Claude Code again.
+## What the plugin keeps
+
+Each prompt you type in a site's design folder is kept with that site in the Studio, where the site's editors can read
+it, so its design can be traced back to what was asked and faults looked into; one typed before the folder is linked
+to a site waits in the plugin's own folder on your computer until it is. The prompts go when the site is deleted.
 
 ## Updates
 

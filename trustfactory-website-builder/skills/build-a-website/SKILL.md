@@ -15,10 +15,11 @@ description: Builds and changes websites for businesses on Website Studio with t
 3. **Words are saved as drafts, their markers in them,** with `content-write` as each page is written, never left in
    the chat alone: the Studio holds them, the share link shows them to the client, and the publish check stops a page
    that still holds a marker.
-4. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout.
-5. **The design's own section types,** beside the platform's five: the contact form, the application form, the Google
-   reviews, before and after, and the video; and our legal pages where the client chose them. Those do what a design
-   can't, and take its look through its stylesheet.
+4. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout, the
+   site set to it (`core-site-update`, `site.set_address_form`), so the platform's own texts say "du" too.
+5. **The design's own section types,** beside the platform's three, the Google reviews, before and after, and the
+   video, and our legal pages where the client chose them; the contact form, the job application form and the map
+   stand in the design's own sections through their slots (`design-folder.md`). Those do what a design can't.
 6. **The legal links and the consent bar stay visible** at every width, never covered or hidden.
 7. **The home page is approved before any subpage is built:** every subpage uses its header, footer, stylesheet and
    section types, so none is redone.
@@ -28,9 +29,15 @@ description: Builds and changes websites for businesses on Website Studio with t
    that points here; a test address stays hidden from them.
 10. **Read a step's reference when the step starts,** and again when coming back to it after a long pause or after the
     conversation was compacted.
-11. **Looking at a page:** with Claude in Chrome where it is connected, at 390 and 1440 px wide. Without it, write no
-    browser program of your own: say what you couldn't check, and ask the person to open the share link on a phone
-    and on a computer.
+11. **Looking at a page:** with Claude in Chrome where it is connected, at 390 and 1440 px wide. Without it,
+    `template_sites-custom` with `page.look` draws a page at 390 and 1280 px in a job, and `template_sites-read` with
+    `page.get_look` shows each part of it and what the browser found; never a browser program of your own.
+12. **A key the Studio no longer takes:** where its tools answer 401, "Credential not accepted", ask the person to
+    make a new key in the Studio under AI agents, enter it in the plugin's options
+    (`/plugin configure trustfactory-website-builder@website-studio`), then restart Claude Code.
+
+The plugin keeps each prompt typed in a site's design folder with that site in the Studio, where its editors can read
+them, so the design can be traced back to what was asked and faults looked into; tell the person so when they ask.
 
 ## 1. Set up the site
 
@@ -42,15 +49,16 @@ German law, in German, from the business's details at each publish.
 - Call `rules-get` once, then `core-read` with `site.list_mine` to find a site's id, or with `organisation.list_mine`
   for a new site's organisation.
 - **A new site:** `core-site-new` with the business's name, `languages: ["de"]`, `default_language: "de"`,
-  `time_zone: "Europe/Berlin"`, `modules: ["content", "template_sites", "consent"]` (add `"blog"` for a Ratgeber), and
-  every business detail you have; leave out the wizard's steps, which a custom site doesn't need. Then
-  `template_sites-write` with `site.set_up`, the base every custom site stands on.
+  `time_zone: "Europe/Berlin"`, `modules: ["content", "template_sites", "consent"]` (add `"blog"` for a Ratgeber),
+  `address_form: "informal"` where the client says "du", and every business detail you have; leave out the wizard's
+  steps, which a custom site doesn't need. Then `template_sites-write` with `site.set_up`, the base every custom site
+  stands on.
 - **An existing template site** keeps its record, its pages and its client's access; its template pages stay and are
   rewritten with the new section types. Until they are, the publish check suggests each template section by name,
   as the design doesn't style it.
 - Choose the design folder, the session's working folder or a new folder in it, and call `design_init` with the
-  site's id and the folder's absolute path: it makes the site custom, with a first design and the contact page, and
-  pulls the design into `design/`.
+  site's id and the folder's absolute path: it makes the site custom, with a first design, and pulls the design into
+  `design/`. Its pages, the contact page among them, are written in the design's own section types (step 4).
 - Ask, as a plain yes or no, whether the site gets our legal pages. On a yes, `template_sites-pages` with
   `legal.add_pages` and `language: "de"` adds the three, each linked in the footer. On a no, pages of the business's
   own, written with `content-write` and marked with `page.save`'s `legal_page`, are linked the same, or the site has
@@ -70,7 +78,7 @@ Read `interview.md` when this step starts.
   `picture.import_from_site`, followed with `core-read` (`job.get`); `template_sites-read` with `picture.get_import`
   says what it kept and why, and `picture.get_contact_sheet` shows them. Look at them before planning the look.
 - Where the client has texts of their own, their current website or what they send, read whether they say "du" or
-  "Sie", and write the site the same way.
+  "Sie", write the site the same way, and set the site to it (rule 4).
 - `core-read` with `business_details.get` shows the facts the site holds, and what our imprint still needs.
 
 ## 3. The home page, until the client approves it
@@ -79,7 +87,8 @@ Read `look.md` and `words.md` before planning, `design-folder.md` before buildin
 moves or opens), and `pictures.md` for its pictures.
 
 - Plan the look and the page, and check the plan against the brief before any code: a look of the business's own,
-  never one of our templates'.
+  never one of our templates'. A high-end brief starts with two or three reference sites and an approved first screen
+  (`look.md`).
 - Build the header, footer, stylesheet and section types in the design folder, and push them with `design_push` after
   each change. A refused push names the file, the line and what to change.
 - Make the home page with `content-write` (`page.create` with the slug `""`, where the site has none), then write it
@@ -99,8 +108,9 @@ Read `search.md` when this step starts.
   and a page per town only where `search.md` allows one. Make each with `content-write` (`page.create`), then write
   it (`page.save`) in the design's own section types; never with `template_sites-pages`' `page.add`, which writes the
   template's sections and which a custom site refuses.
-- The contact page came with the set-up: write its words for the business, its contact block's heading, line and
-  points checked against the business's details.
+- The contact page, `kontakt`, made the same way: a section of the design's own with the form
+  (`data-slot="contact-form"`), the business's details through `data-business`, never typed in, and the map
+  (`data-slot="map"`) where the client wants one.
 - The menu: `page.move` orders it, and `page.set_menu_parent` lists a service's page under Leistungen, which its
   breadcrumb then reads ("Start > Leistungen > Fassadenanstrich"); two levels deep at most. A page the menu names gets
   built, or its item waits until it is.
@@ -113,10 +123,11 @@ Read `search.md` when this step starts.
 `core-read` with `module.list_catalogue` lists what each module adds; `core-site-setup` with `module.switch` switches
 one on.
 
-- **Forms:** the `contact_form` section, on the contact page and wherever an enquiry belongs. Enquiries arrive in
-  `core-read` (`form.list_submissions`).
-- **Jobs:** a careers page with the `application_form` section naming the open jobs, and a page for each job where
-  there are several. Applications arrive in `core-read` (`form.list_submissions`, purpose `application`).
+- **Forms:** the contact form in a section of the design's own, on the contact page and wherever an enquiry belongs.
+  Enquiries arrive in `core-read` (`form.list_submissions`).
+- **Jobs:** a careers page whose section of the design's own names the open jobs and holds the application form
+  (`data-slot="application-form"`), where the applicant writes the job, and a page for each job where there are several.
+  Applications arrive in `core-read` (`form.list_submissions`, purpose `application`).
 - **Reviews:** `external_ratings-write` with `listing.set_link` names the business's Google listing and fetches its
   reviews; the `google_reviews` section shows them. A review is never written by hand.
 - **Blog:** `blog-write` (`post.create`, `post.save`, `post.publish`). A post is online as soon as it is published; one

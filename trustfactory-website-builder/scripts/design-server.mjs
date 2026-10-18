@@ -40,7 +40,7 @@ const TOOLS = [
   {
     name: 'design_init',
     description:
-      'Starts a design folder for a Website Studio site: makes the site a custom site, with a first design and its contact page (safe to run again; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json and pulls its design into design/; the prompts given in the folder before it was linked are kept with the site then.',
+      'Starts a design folder for a Website Studio site: makes the site a custom site, with a first design (safe to run again; its pages are written in the design’s own section types; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json and pulls its design into design/; the prompts given in the folder before it was linked are kept with the site then.',
     inputSchema: {
       type: 'object',
       properties: { site_id: { type: 'string', description: 'The site’s id.' }, folder: FOLDER },
@@ -63,7 +63,7 @@ const TOOLS = [
   {
     name: 'design_push',
     description:
-      'Saves the folder’s design/ files, read from disk, as the site’s draft design and answers the preview’s address. A refusal names each file and line to change, and the design saved before stays. A font file new to the site waits for its person’s approval in the Studio first: the answer names each with the link to approve it at, to show the person, who approves it only if the font’s licence allows use on websites; push again once approved.',
+      'Saves the folder’s design/ files, read from disk, as the site’s draft design and answers the preview’s address. A refusal names each file and line to change, and the design saved before stays. A font file new to the site is added with it.',
     inputSchema: { type: 'object', properties: { folder: FOLDER }, additionalProperties: false },
     run: ({ folder }) => push(folderOf(folder)),
   },

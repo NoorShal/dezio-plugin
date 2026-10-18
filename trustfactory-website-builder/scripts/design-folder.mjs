@@ -67,14 +67,13 @@ export function settings() {
  * One request to the site's API with the agent key: its answer, a refusal thrown as `Refused`, which names each thing
  * by `placeOf` its pointer, where the call knows what the pointer leads into.
  */
-async function request(site, method, path, body, { headers = {}, placeOf } = {}) {
+async function request(site, method, path, body, placeOf) {
   const { key, api } = settings();
   const response = await fetch(new URL(`/v1/sites/${encodeURIComponent(site)}/${path}`, api), {
     method,
     headers: {
       authorization: `Bearer ${key}`,
       ...(body === undefined ? {} : { 'content-type': 'application/json' }),
-      ...headers,
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
@@ -87,7 +86,7 @@ async function request(site, method, path, body, { headers = {}, placeOf } = {})
 
 /** One call to the site's API with the agent key: a read's answer, or an action's output. */
 export async function call(site, method, path, body, placeOf) {
-  const answer = await request(site, method, path, body, { placeOf });
+  const answer = await request(site, method, path, body, placeOf);
   if (method === 'GET') {
     return answer;
   }
@@ -273,7 +272,7 @@ async function sentPrompts(dir, site) {
 }
 
 /**
- * Makes the site a custom site, with a first design and the contact page (safe to run again), names it in the folder's
+ * Makes the site a custom site, with a first design (safe to run again), names it in the folder's
  * studio.json, pulls its design and sends the prompts given in the folder before.
  */
 export async function init(dir, site) {
@@ -286,87 +285,29 @@ export async function init(dir, site) {
 /** The font files this process has added to the site already, by their hash, so a later push sends none again. */
 const added = new Set();
 
-/**
- * Asks the site to add a font file, with the approval its person gave where the folder keeps one: the answer, `done`
- * or a new `approval`; an approval no longer good for the call is dropped and asked for again.
- */
-async function askForFont(site, font, approval) {
-  const body = { name: font.name, woff2: Buffer.from(font.bytes).toString('base64') };
-  if (approval === undefined) {
-    return request(site, 'POST', 'font:add', body);
-  }
-  try {
-    return await request(site, 'POST', 'font:add', body, { headers: { 'approval-id': approval.id } });
-  } catch (error) {
-    if (error instanceof Refused && error.problem?.code === 'approval_invalid') {
-      return request(site, 'POST', 'font:add', body);
-    }
-    throw error;
-  }
-}
-
-/**
- * Adds each of the folder's font files the site doesn't hold yet. A new one waits for its person's approval in the
- * Studio, which says its licence allows use on websites: the push stops there, naming each file with the link to
- * approve it at, and keeps the approval in studio.json, so the next push, once it is approved, adds the file.
- */
-async function addFonts(dir, site) {
+/** Adds each of the folder's font files the site doesn't hold yet, so the design's font faces find them. */
+async function addFonts(site, dir) {
   const local = (await readFonts(dir)).filter(({ hash }) => !added.has(hash));
   if (local.length === 0) {
     return;
   }
   const { fonts: held } = await call(site, 'GET', 'font:list');
-  const studio = await settingsOf(dir);
-  const approvals = new Map(Object.entries(studio.font_approvals ?? {}));
-  const waiting = [];
-  try {
-    for (const font of local.filter(({ hash }) => !held.some((known) => known.hash === hash))) {
-      let answer;
-      try {
-        answer = await askForFont(site, font, approvals.get(font.hash));
-      } catch (error) {
-        const code = error instanceof Refused ? error.problem?.code : undefined;
-        if (code === 'approval_pending') {
-          waiting.push(`design/fonts/${font.name}: still waits for your approval at ${approvals.get(font.hash).url}`);
-          continue;
-        }
-        if (code === 'approval_declined') {
-          approvals.delete(font.hash);
-          throw new Refused(409, {
-            detail: `design/fonts/${font.name} was declined: take it and its font face out of the design.`,
-          });
-        }
-        throw error;
-      }
-      if (answer.status === 'approval') {
-        approvals.set(font.hash, { id: answer.approval_id, url: answer.approval_url });
-        waiting.push(`design/fonts/${font.name}: ${answer.preview.summary} Approve it at ${answer.approval_url}`);
-      } else {
-        approvals.delete(font.hash);
-        added.add(font.hash);
-      }
+  for (const font of local) {
+    if (!held.some((known) => known.hash === font.hash)) {
+      await call(site, 'POST', 'font:add', { name: font.name, woff2: Buffer.from(font.bytes).toString('base64') });
     }
-  } finally {
-    const open = approvals.size === 0 ? undefined : Object.fromEntries(approvals);
-    await writeFile(join(dir, 'studio.json'), `${JSON.stringify({ ...studio, font_approvals: open }, null, 2)}\n`);
-  }
-  if (waiting.length > 0) {
-    throw new Refused(409, {
-      detail:
-        'Not pushed: a new font file waits for your approval in the Studio. Approve it only if the font’s licence allows its use on websites, then push again.',
-      errors: waiting.map((detail) => ({ detail })),
-    });
+    added.add(font.hash);
   }
 }
 
 /**
  * Saves the folder's design as the site's draft design, its new font files added first: what was saved, what the design
  * may want to change, and where to look at it, in lines. A refusal throws `Refused`, naming each file and line to
- * change, or each font file with the link to approve it at.
+ * change.
  */
 export async function push(dir) {
   const site = await siteOf(dir);
-  await addFonts(dir, site);
+  await addFonts(site, dir);
   const design = await readDesign(dir);
   const saved = await call(site, 'POST', 'template_sites/custom_design:set', design, placeInDesign(design));
   const types = saved.section_types.length === 0 ? 'none' : saved.section_types.join(', ');
