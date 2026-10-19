@@ -152,10 +152,20 @@ async function readDesign(dir) {
   }
   const pageFile = join(design, PAGE_SCRIPT);
   const pageScript = existsSync(pageFile) ? await read(pageFile) : undefined;
+  // A folder starts empty on a site whose design was never pushed: the frame is written before the first push.
+  const frame = (part) => {
+    const file = join(design, FRAME[part]);
+    if (!existsSync(file)) {
+      throw new Error(
+        `design/${FRAME[part]} is missing: write design/header.html, design/footer.html and design/stylesheet.css, then push.`,
+      );
+    }
+    return read(file);
+  };
   return {
-    header: await read(join(design, FRAME.header)),
-    footer: await read(join(design, FRAME.footer)),
-    stylesheet: await read(join(design, FRAME.stylesheet)),
+    header: await frame('header'),
+    footer: await frame('footer'),
+    stylesheet: await frame('stylesheet'),
     section_types: sectionTypes,
     ...(pageScript === undefined ? {} : { page_script: pageScript }),
     fonts: (await readFonts(dir)).map(({ name, hash }) => ({ name, hash })),
@@ -259,12 +269,22 @@ async function writeFonts(dir, site, fonts) {
   }
 }
 
-/** Writes the site's design into the folder's `design/` files, its font files too: what it pulled, in words. */
+/**
+ * Writes the site's design into the folder's `design/` files, its font files too: what it pulled, in words. A site whose
+ * design was never pushed holds only the starter its set-up gave, which the folder never takes: the folder stays as it
+ * is, and its design is written from the brief.
+ */
 export async function pull(dir) {
   const site = await siteOf(dir);
-  const { source } = await call(site, 'GET', 'template_sites/custom_design:get');
+  const { source, pushed } = await call(site, 'GET', 'template_sites/custom_design:get');
   if (source === null) {
     throw new Error('The site is no custom site yet: start the folder with its id first.');
+  }
+  if (pushed === false) {
+    return (
+      `Site ${site}'s design was never pushed, so nothing was pulled: write design/header.html, design/footer.html and ` +
+      'design/stylesheet.css, and the section types, then push. Until then the Studio shows a starter.'
+    );
   }
   await writeDesign(dir, source);
   await writeFonts(dir, site, source.fonts ?? []);
@@ -283,8 +303,8 @@ async function sentPrompts(dir, site) {
 }
 
 /**
- * Makes the site a custom site, with a first design (safe to run again), names it in the folder's
- * studio.json, pulls its design and sends the prompts given in the folder before.
+ * Makes the site a custom site (safe to run again), names it in the folder's studio.json, pulls its design where one
+ * was pushed before, and sends the prompts given in the folder before.
  */
 export async function init(dir, site) {
   await mkdir(dir, { recursive: true });

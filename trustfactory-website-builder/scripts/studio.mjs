@@ -2,6 +2,7 @@
 // The design folder from a terminal: pulled from Website Studio, pushed back as the site's draft design, and pushed on
 // every save while a designer works. Claude uses the same steps as the plugin's design-folder tools.
 import { watch } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
@@ -9,9 +10,9 @@ import { init, pull, push, Refused } from './design-folder.mjs';
 
 const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
 
-  init <site id>  Makes the site a custom site (a first design; safe to run again) and pulls its design
-                  into the folder.
-  pull            Writes the site's design into the folder's design/ files.
+  init <site id>  Makes the site a custom site (safe to run again) and pulls its design into the folder,
+                  where one was pushed before; on a site whose design was never pushed the folder starts empty.
+  pull            Writes the site's design into the folder's design/ files, where one was pushed.
   push            Saves the folder's design as the site's draft design; a refused file is named with its line.
   dev             Pushes once, then again on every save, until stopped.
 
@@ -47,7 +48,9 @@ async function pushed(dir) {
 }
 
 async function dev(dir) {
-  await pushed(dir);
+  // A new site's folder starts empty: the first push names the files to write, and the saves that write them push.
+  await mkdir(join(dir, 'design'), { recursive: true });
+  await pushed(dir).catch((error) => console.error(error.message));
   let waiting;
   // One push at a time: a save while one is on its way is pushed once it has answered, so an older push never lands
   // after a newer one, and any number of saves meanwhile make one push.

@@ -22,6 +22,11 @@ design/fonts/<name>.woff2   a font file, which the stylesheet's font faces name
 
 ## Working loop
 
+`design_init` names the site in the folder's `studio.json`, and pulls its design into `design/` where one was pushed
+before. On a site whose design was never pushed the folder starts empty: write `design/header.html`,
+`design/footer.html`, `design/stylesheet.css` and the section types, then push. The Studio shows a starter until the
+first push.
+
 1. Edit the files, then call `design_push` with the folder's absolute path. It reads the files from disk and saves
    them as the site's draft design, answering the preview's address, or each refusal as
    `design/<file>:<line> what to change`.
@@ -38,8 +43,8 @@ Every push that changes the design is kept as a version (`template_sites-read` w
 `template_sites-custom` with `custom_design.roll_back` takes the design back to one. Someone else may have pushed or
 restored meanwhile: look at the list before a push that builds on an older state.
 
-To start from the design saved in the Studio, call `design_pull`. A push sends the whole folder: a section type left
-out is removed, refused while a page still holds one.
+To start from the design saved in the Studio, call `design_pull`; on a site whose design was never pushed it writes
+nothing. A push sends the whole folder: a section type left out is removed, refused while a page still holds one.
 
 ## A section type
 

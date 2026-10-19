@@ -69,8 +69,10 @@ German law, in German, from the business's details at each publish.
   rewritten with the new section types. Until they are, the publish check suggests each template section by name,
   as the design doesn't style it.
 - Choose the design folder, the session's working folder or a new folder in it, and call `design_init` with the
-  site's id and the folder's absolute path: it makes the site custom, with a first design, and pulls the design into
-  `design/`. Its pages, the contact page among them, are written in the design's own section types (step 4).
+  site's id and the folder's absolute path: it makes the site custom and names it in the folder's `studio.json`, and
+  pulls its design into `design/` where one was pushed before; on a new site the folder starts empty
+  (`design-folder.md`, "Working loop"). Its pages, the contact page among them, are written in the design's own section
+  types (step 4).
 - Ask, as a plain yes or no, whether the site gets our legal pages. On a yes, `template_sites-pages` with
   `legal.add_pages` and `language: "de"` adds the three, each linked in the footer. On a no, pages of the business's
   own, written with `content-write` and marked with `page.save`'s `legal_page`, are linked the same, or the site has
@@ -107,6 +109,11 @@ its pictures.
   sequence; one word of a heading in another colour or italics; gradient text; glass and blur as decoration; "→"
   after every link; meta lines joined with middle dots; a monospace face for labels; a big number with a small label
   as the hero.
+- **Plan the look, then check the plan against the brief.** Write the plan in a few lines: four to six named colours,
+  the type and what each face does, how the header, the home page's sections and the footer are laid out, and what
+  makes this site the business's own. Then compare it with the site you would make for any business of its kind: each
+  part, the header and the footer included, that you would make the same way anyway, make again from this business,
+  its brief, its trade, its place and its facts, and say what you changed and why. Build only then.
 - Build the header, footer, stylesheet and section types in the design folder, and push them with `design_push` after
   each change. A refused push names the file, the line and what to change.
 - Make the home page with `content-write` (`page.create` with the slug `""`, where the site has none), then write it
