@@ -23,9 +23,9 @@ design/fonts/<name>.woff2   a font file, which the stylesheet's font faces name
 ## Working loop
 
 `design_init` names the site in the folder's `studio.json`, and pulls its design into `design/` where one was pushed
-before. On a site whose design was never pushed the folder starts empty: write `design/header.html`,
-`design/footer.html`, `design/stylesheet.css` and the section types, then push. The Studio shows a starter until the
-first push.
+before. On a site whose design was never pushed nothing is pulled, so a new folder starts empty: write
+`design/header.html`, `design/footer.html`, `design/stylesheet.css` and the section types, then push. The Studio shows a
+starter until the first push. A folder that holds another site's design is refused: each site has a folder of its own.
 
 1. Edit the files, then call `design_push` with the folder's absolute path. It reads the files from disk and saves
    them as the site's draft design, answering the preview's address, or each refusal as

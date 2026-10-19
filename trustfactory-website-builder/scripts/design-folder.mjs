@@ -302,11 +302,41 @@ async function sentPrompts(dir, site) {
   return sent === 0 ? [] : [`Kept ${String(sent)} prompt${sent === 1 ? '' : 's'} given before with the site.`];
 }
 
+/** Whether the folder's design/ holds any file of a design: a hidden one, such as Finder's .DS_Store, is none. */
+async function holdsDesign(dir) {
+  const design = join(dir, 'design');
+  return (
+    existsSync(design) &&
+    (await readdir(design, { recursive: true, withFileTypes: true })).some(
+      (entry) => entry.isFile() && !entry.name.startsWith('.'),
+    )
+  );
+}
+
+/**
+ * Refuses a folder whose design is another site's, before anything is asked of the Studio: its files would otherwise be
+ * pushed to this site, so they are neither sent nor deleted, and the site starts in a folder of its own.
+ */
+async function refuseAnotherSite(dir, site) {
+  if (!existsSync(join(dir, 'studio.json')) || !(await holdsDesign(dir))) {
+    return;
+  }
+  const named = await siteOf(dir);
+  if (named !== site) {
+    const other = typeof named === 'string' ? ` ${named}` : '';
+    throw new Error(
+      `This folder holds the design of another site${other}: start site ${site} in a new folder. Nothing was changed or sent.`,
+    );
+  }
+}
+
 /**
  * Makes the site a custom site (safe to run again), names it in the folder's studio.json, pulls its design where one
- * was pushed before, and sends the prompts given in the folder before.
+ * was pushed before, and sends the prompts given in the folder before. A folder holding another site's design is
+ * refused.
  */
 export async function init(dir, site) {
+  await refuseAnotherSite(dir, site);
   await mkdir(dir, { recursive: true });
   await writeFile(join(dir, 'studio.json'), `${JSON.stringify({ site_id: site }, null, 2)}\n`);
   await call(site, 'POST', 'template_sites/custom_site:set_up', {});

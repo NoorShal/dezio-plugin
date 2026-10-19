@@ -40,7 +40,7 @@ const TOOLS = [
   {
     name: 'design_init',
     description:
-      'Starts a design folder for a Website Studio site: makes the site a custom site (safe to run again; its pages are written in the design’s own section types; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json, and pulls its design into design/ where one was pushed before. On a site whose design was never pushed the folder starts empty: write design/header.html, design/footer.html, design/stylesheet.css and the section types, then push; the Studio shows a starter until then. The prompts given in the folder before it was linked are kept with the site then.',
+      'Starts a design folder for a Website Studio site: makes the site a custom site (safe to run again; its pages are written in the design’s own section types; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json, and pulls its design into design/ where one was pushed before. On a site whose design was never pushed nothing is pulled, so a new folder starts empty: write design/header.html, design/footer.html, design/stylesheet.css and the section types, then push; the Studio shows a starter until then. A folder holding another site’s design is refused: each site has a folder of its own. The prompts given in the folder before it was linked are kept with the site then.',
     inputSchema: {
       type: 'object',
       properties: { site_id: { type: 'string', description: 'The site’s id.' }, folder: FOLDER },

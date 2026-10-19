@@ -51,4 +51,4 @@ is lost if the talk stops.
   lists, in plain words ("the imprint still needs your phone number before the site can be published"). A site can be
   built with gaps, but not published while our imprint lacks a detail it draws.
 - Ask: "Anything else the site should say or show?"
-- Then the three directions for the look (`SKILL.md`, step 3).
+- Then the look (`SKILL.md`, step 3).

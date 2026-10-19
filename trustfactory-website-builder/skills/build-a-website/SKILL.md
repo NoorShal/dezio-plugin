@@ -68,9 +68,9 @@ German law, in German, from the business's details at each publish.
 - **An existing template site** keeps its record, its pages and its client's access; its template pages stay and are
   rewritten with the new section types. Until they are, the publish check suggests each template section by name,
   as the design doesn't style it.
-- Choose the design folder, the session's working folder or a new folder in it, and call `design_init` with the
-  site's id and the folder's absolute path: it makes the site custom and names it in the folder's `studio.json`, and
-  pulls its design into `design/` where one was pushed before; on a new site the folder starts empty
+- Choose the design folder, the session's working folder or a new folder in it, and call `design_init` with the site's
+  id and the folder's absolute path: it makes the site custom and names it in the folder's `studio.json`, and pulls its
+  design into `design/` where one was pushed before; on a site whose design was never pushed the folder starts empty
   (`design-folder.md`, "Working loop"). Its pages, the contact page among them, are written in the design's own section
   types (step 4).
 - Ask, as a plain yes or no, whether the site gets our legal pages. On a yes, `template_sites-pages` with
@@ -100,9 +100,11 @@ Read `interview.md` when this step starts.
 Read `design-folder.md` before building (with `scripts.md` for anything that moves or opens), and `pictures.md` for
 its pictures.
 
-- **Three directions first:** offer three really different directions, one line each (the idea that carries the page,
-  the colours, the type), and the person picks one; with nobody to ask, choose one and say why. The look is the
-  business's own, never one of our templates'.
+- **Three directions, then the best one built:** think of three really different directions (the idea that carries the
+  page, the colours, the type), choose the one that fits the brief best, and say in one line which and why. Build it
+  and show it through the share link: the client judges what they see, and may ask for another of the three, or
+  anything else, at any time. Where the client asks to choose before anything is built, describe the three in a line
+  each. The look is the business's own, never one of our templates'.
 - **Looks that read as generated,** avoided unless the brief asks for them: a cream ground with a terracotta accent,
   or near-black with one acid accent; identical rounded cards with the same soft shadow as the page's structure, cards
   inside cards; a small all-caps label above every heading; numbered markers (01 / 02 / 03) on things that aren't a
