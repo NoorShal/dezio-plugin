@@ -35,10 +35,18 @@ a demanding customer would and puts it in place. A place it can't fill well stay
    with the design folder's `design_upload`, each with its alt text, and put each in its place with `content-write`
    (`page.save`, the field's value the file's id).
 5. **The rest:** `template_sites-pages` with `picture.make`, every place still empty in one request, up to 30, each
-   with its `scene`, `alt` and `shape`; a bigger site makes a second request. It says first what it will cost, then is
-   confirmed. `template_sites-read` with `picture.get_made` says what came of each place: placed, refused with the
-   check's reason, not made in time, a picture put there meanwhile, or the place gone.
+   with its `scene`, `alt` and `shape`, and the request's `style` (below); a bigger site makes a second request. It
+   says first what it will cost, then is confirmed. `template_sites-read` with `picture.get_made` says what came of
+   each place: placed, refused with the check's reason, not made in time, a picture put there meanwhile, or the place
+   gone.
 6. **A refused place:** read the check's reason, write the scene again simpler, and ask once more.
+
+## The style, in English
+
+`style` is how the site's pictures are photographed: one line you write from the direction the site's look was built
+in, its light, colour and mood, such as "bold flash photography, saturated colours, editorial fashion look" or "quiet
+natural light, soft greens". Every picture of the request takes it, so the pictures look like the site they stand on.
+Website Studio adds nothing of its own taste: without a `style`, a picture is a plain professional photograph.
 
 ## The scene, in English
 
