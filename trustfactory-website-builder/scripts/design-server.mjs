@@ -5,7 +5,8 @@
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline';
 
-import { init, pull, push, Refused } from './design-folder.mjs';
+import { init, pull, push, Refused, siteOf } from './design-folder.mjs';
+import { MOST_SECONDS, waitForJob } from './jobs.mjs';
 import { describe, upload } from './pictures.mjs';
 
 /** The protocol revisions it speaks, newest first; a client asking for another gets the newest. */
@@ -119,6 +120,36 @@ const TOOLS = [
       additionalProperties: false,
     },
     run: ({ folder, site_id: site, files }) => describe(folderOf(folder), files, siteNamed(site)),
+  },
+  {
+    name: 'job_wait',
+    description:
+      'Waits for a Website Studio job to end, such as a page look, pictures being made or a website being read: it looks at the job, waits on this computer as long as the Studio says before looking again, and answers once, with the job as it ended, or after two minutes with the job still running and how much longer such jobs usually take, to wait on with another call. Use it for every job instead of reading the job again and again.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        folder: FOLDER,
+        site_id: SITE,
+        job_id: { type: 'string', description: 'The job’s id, as the call that started it answered.' },
+        seconds: {
+          type: 'integer',
+          minimum: 1,
+          maximum: MOST_SECONDS,
+          description: `The longest to wait, in seconds; ${String(MOST_SECONDS)} unless given.`,
+        },
+      },
+      required: ['job_id'],
+      additionalProperties: false,
+    },
+    run: async ({ folder, site_id: site, job_id: job, seconds }) => {
+      if (typeof job !== 'string' || job === '') {
+        throw new Error('job_wait takes the job’s id.');
+      }
+      if (seconds !== undefined && !(Number.isInteger(seconds) && seconds >= 1 && seconds <= MOST_SECONDS)) {
+        throw new Error(`seconds is a whole number from 1 to ${String(MOST_SECONDS)}.`);
+      }
+      return waitForJob(siteNamed(site) ?? (await siteOf(folderOf(folder))), job, seconds ?? MOST_SECONDS);
+    },
   },
 ];
 

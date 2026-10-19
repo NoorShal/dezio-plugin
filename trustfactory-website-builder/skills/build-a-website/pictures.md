@@ -36,9 +36,9 @@ a demanding customer would and puts it in place. A place it can't fill well stay
    (`page.save`, the field's value the file's id).
 5. **The rest:** `template_sites-pages` with `picture.make`, every place still empty in one request, up to 30, each
    with its `scene`, `alt` and `shape`, and the request's `style` (below); a bigger site makes a second request. It
-   says first what it will cost, then is confirmed. `template_sites-read` with `picture.get_made` says what came of
-   each place: placed, refused with the check's reason, not made in time, a picture put there meanwhile, or the place
-   gone.
+   says first what it will cost, then is confirmed; `job_wait` waits for its job. `template_sites-read` with
+   `picture.get_made` says what came of each place: placed, refused with the check's reason, not made in time, a
+   picture put there meanwhile, or the place gone.
 6. **A refused place:** read the check's reason, write the scene again simpler, and ask once more.
 
 ## The style, in English

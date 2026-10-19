@@ -46,6 +46,10 @@ license: Contains a few lines adapted from Anthropic's frontend-design and Paul 
     page look's findings name what it misses. Visitors who ask their device for less motion get a calm version. What
     moves by itself for more than five seconds beside the content can be paused, or ends by itself. Motion the visitor
     drives, by scrolling, dragging or a click, is free.
+14. **Waiting on a job:** a call that starts one, such as a page look, pictures or a read of a website, answers its
+    `job_id`. Wait for it with the design folder's `job_wait`: one call that waits on this computer until the job
+    ends, two minutes at most, and answers it as it ended; one still running then is waited on with another call.
+    Never read the job again and again, and never sleep.
 
 The plugin keeps each prompt typed in a site's design folder, and its Claude Code session, with that site in the
 Studio, where its editors can read them (`template_sites-read` with `design_prompt.list`), so the design can be traced
@@ -89,7 +93,7 @@ Read `interview.md` when this step starts.
   opening hours, services, founding year, team size and story; `template_sites-read` with `prefill.get` lists each
   value with the page and words it stands in. Set only what the client confirms, with `core-site-update`
   (`business_details.set`). Then take its pictures, before any design: `template_sites-pages` with
-  `picture.import_from_site`, followed with `core-read` (`job.get`); `template_sites-read` with `picture.get_import`
+  `picture.import_from_site`, waited on with `job_wait`; `template_sites-read` with `picture.get_import`
   says what it kept and why, and `picture.get_contact_sheet` shows them. Look at them before planning the look.
 - Where the client has texts of their own, their current website or what they send, read whether they say "du" or
   "Sie", write the site the same way, and set the site to it (rule 4).
@@ -120,8 +124,11 @@ its pictures.
   each change. A refused push names the file, the line and what to change.
 - Make the home page with `content-write` (`page.create` with the slug `""`, where the site has none), then write it
   with `page.save`.
-- Its pictures: the client's own photos first, from their current website and those they send, then pictures Website
-  Studio makes for the places left. The same for every subpage.
+- **Its pictures:** a business's site shows its work, its place and its people in pictures. The client's own photos
+  come first, from their current website and those they send; where they have none, Website Studio makes them in the
+  site's style, so missing photos never make a page without pictures. Plan the picture places the look needs, and fill
+  the home page's before it is shown: one `template_sites-pages` `picture.make` for the places left, its cost shown
+  and confirmed (rule 8, `pictures.md`). Each subpage the same way.
 - Show it to the client: `core-preview-link-create` makes a link that shows the drafts without a login, for 1 to 30
   days. It takes a key of the site's admin, and the link is shown once: hand it over as it is.
 - Change it until the client approves it. Every push is kept as a version, and `custom_design.roll_back` takes the
@@ -207,7 +214,7 @@ Connecting the business's own domain is the launch; there is no other step.
 2. Publish (step 7): a new address is served only from a publish drawn for it.
 3. `template_sites-read` with `host.get_dns` names the one DNS record the domain's owner adds where it doesn't point
    here yet. Hand it over as it is.
-4. Once it is added, `template_sites-publish` with `host.check_dns` asks again (`core-read` `job.get` follows it), and
+4. Once it is added, `template_sites-publish` with `host.check_dns` asks again (`job_wait` waits on it), and
    `host.get_dns` says what it saw.
 5. Once the domain points here, the site is visible to search engines there. Open its live `sitemap.xml` and
    `robots.txt` once: the sitemap lists the pages, and `robots.txt` names it.

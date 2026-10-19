@@ -237,12 +237,13 @@ each, 12 per design) and name it in a font face, the only place a stylesheet may
   font-family: "Muster Sans";
   src: url("fonts/muster-sans-regular.woff2") format("woff2");
   font-weight: 400;
-  font-display: swap;
 }
 :root { --site-font-heading: "Muster Sans", system-ui, sans-serif; --site-font-body: "Muster Sans", system-ui, sans-serif; }
 ```
 
 The push adds the files to the site, which serves them from its own host, so no visitor's browser asks another one.
+Each page fetches first the upright faces the stylesheet draws with, at most four, and the site draws every face so
+the text never moves as its font arrives, whatever `font-display` a face names.
 
 **Sections:** the design draws its pages with section types of its own. Of the platform's, use only those that do
 what a design can't: the Google reviews (`google_reviews`), a job's pictures before and after (`before_after`), a
