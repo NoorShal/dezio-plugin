@@ -8,6 +8,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
 import { sendKeptPrompts } from './prompts.mjs';
+import { readWords, WORDS, writeWords } from './words.mjs';
 
 /** The online Studio, which every setting falls back to. */
 const ONLINE = { api: 'https://website-studio-api.vercel.app', admin: 'https://website-studio-admin.vercel.app' };
@@ -169,6 +170,7 @@ async function readDesign(dir) {
     section_types: sectionTypes,
     ...(pageScript === undefined ? {} : { page_script: pageScript }),
     fonts: (await readFonts(dir)).map(({ name, hash }) => ({ name, hash })),
+    words: await readWords(dir),
   };
 }
 
@@ -205,6 +207,11 @@ function placeInDesign(design) {
       const font = design.fonts[Number(index)];
       return font === undefined ? 'design/fonts' : `design/fonts/${font.name}`;
     }
+    if (part === WORDS) {
+      // A language's file, and within it a word by its key.
+      const file = index === undefined ? `design/${WORDS}` : `design/${WORDS}/${index}.json`;
+      return kind === undefined ? file : `${file}, "${kind}"`;
+    }
     const type = part === 'section_types' ? design.section_types[Number(index)] : undefined;
     if (type === undefined) {
       return part === 'section_types' ? 'design/sections' : pointerWords(pointer);
@@ -226,8 +233,8 @@ function placeInDesign(design) {
 }
 
 /**
- * Writes the design's files as the Studio holds them; a script file, the page's or a type's, goes where the Studio's
- * design has none, so a later push never brings back a script the design no longer holds.
+ * Writes the design's files as the Studio holds them; a script file, the page's or a type's, and a language's words
+ * file go where the Studio's design has none, so a later push never brings back one the design no longer holds.
  */
 async function writeDesign(dir, source) {
   const sections = join(dir, 'design', 'sections');
@@ -235,6 +242,7 @@ async function writeDesign(dir, source) {
   for (const [part, file] of Object.entries(FRAME)) {
     await writeFile(join(dir, 'design', file), source[part]);
   }
+  await writeWords(dir, source.words ?? {});
   const pageFile = join(dir, 'design', PAGE_SCRIPT);
   await (source.page_script === undefined ? rm(pageFile, { force: true }) : writeFile(pageFile, source.page_script));
   for (const { definition, markup, holds, script } of source.section_types) {

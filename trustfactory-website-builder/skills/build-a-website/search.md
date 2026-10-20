@@ -30,7 +30,7 @@ Set these with `content-write` (`page.title`, `page.heading`, `page.seo_title`, 
 
 | Field | What it is |
 |---|---|
-| `title` | the menu's word, such as "Fassadenanstrich" |
+| `title` | the menu's word, such as "Facade painting" |
 | `heading` | the page's heading |
 | `seo_title` | the search title: at most 60 characters (70 allowed) |
 | `seo_description` | 110–150 characters (160 allowed) |
@@ -42,7 +42,13 @@ check suggests about 450 words on a short page; it never stops a publish.
 
 - The menu comes from the `nav` slot: the pages marked `in_menu`, in the order `content-write`'s `page.move` gives
   them, a page listed under another inside that page's entry.
-- One page per service, at `/leistungen/<service>/`, listed under Leistungen with `content-write`'s
-  `page.set_menu_parent`, so its breadcrumb reads "Start > Leistungen > Fassadenanstrich". With many services, mark
-  their pages out of the menu (`in_menu: false`): they keep the breadcrumb and are reached from the services.
+- One page per service, under the services page's address, such as `/services/<service>/`, listed under the services
+  page with `content-write`'s `page.set_menu_parent`, so its breadcrumb reads from the home page down to the service.
+  With many services, mark their pages out of the menu (`in_menu: false`): they keep the breadcrumb and are reached
+  from the services.
 - A service card links to its page through a `url` field bound with `data-href`.
+
+## German sites
+
+On a page in German, a service's page is at `/leistungen/<service>/`, listed under Leistungen, its breadcrumb reading
+"Start > Leistungen > Fassadenanstrich", and its menu word one such as "Fassadenanstrich".

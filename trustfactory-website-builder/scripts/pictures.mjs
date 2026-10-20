@@ -16,10 +16,14 @@ function picturesOf(entries) {
   return entries;
 }
 
-/** What a picture's entry sets of it: its alt text, its decorative mark and its credit, where given. */
+/**
+ * What a picture's entry sets of it: its alt text, in the language named or else the site's main one, its decorative
+ * mark and its credit, where given.
+ */
 function detailsOf(entry) {
   return {
     ...(typeof entry?.alt === 'string' ? { alt: entry.alt } : {}),
+    ...(typeof entry?.language === 'string' ? { language: entry.language } : {}),
     ...(typeof entry?.decorative === 'boolean' ? { decorative: entry.decorative } : {}),
     ...(typeof entry?.credit === 'string' ? { credit: entry.credit } : {}),
   };

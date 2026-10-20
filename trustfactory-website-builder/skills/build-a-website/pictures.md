@@ -50,7 +50,7 @@ Website Studio adds nothing of its own taste: without a `style`, a picture is a 
 
 ## The scene, in English
 
-- The business's real materials and kind of place, in German buildings and interiors.
+- The business's real materials and kind of place, in the buildings and interiors of its country.
 - **A tool on its surface is drawn badly:** a roller on a wall, a brush on a frame, hands fitting a part. Show the
   work at rest instead: the finished surface, the tool laid down beside it.
 - **People:** few, at work, seen from the side or from behind, their faces turned away; never a named person.
@@ -63,7 +63,9 @@ Website Studio adds nothing of its own taste: without a `style`, a picture is a 
 
 - **`shape`:** the shape the design draws the field in. `wide` (3:2) for an opening or a wide band, `card` (4:3) for
   cards and tiles, `square` (1:1), `portrait` (4:5) for a person or a tall subject; the place's frame crops the rest.
-- **`alt`:** German, under 150 characters, one sentence of what the picture shows. A picture's description is written
-  once in the site's library and stands wherever the picture appears. A picture that only decorates, or sits right
-  beside the name it shows, such as on a service's card, is marked decorative in the library afterwards
-  (`core-file-write`), so screen readers pass over it.
+- **`alt`:** in the site's main language, under 150 characters, one sentence of what the picture shows. A picture's
+  description is written once per language in the site's library and stands wherever the picture appears in that
+  language; a site's other languages get theirs with `design_describe`, its `language` named (`SKILL.md`, "Sites in
+  several languages"). A picture that only
+  decorates, or sits right beside the name it shows, such as on a service's card, is marked decorative in the library
+  afterwards (`core-file-write`), so screen readers pass over it.

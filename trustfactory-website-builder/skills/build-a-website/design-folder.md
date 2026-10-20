@@ -3,9 +3,9 @@
 A custom site's header, footer, stylesheet and section types, in a local folder pushed to the site's drafts and looked
 at in the Studio's preview. The site must be a custom site with a design folder (`SKILL.md`, step 1).
 
-Contents: the folder's files; the working loop; a section type; bindings; what markup may hold; the stylesheet, with
-the editor's canvas, what the platform draws around the design, the site's variables, fonts, the platform's sections,
-the forms and the map, and posts.
+Contents: the folder's files; the working loop; a section type; bindings; words in each language; what markup may
+hold; the stylesheet, with the editor's canvas, what the platform draws around the design, the site's variables,
+fonts, the platform's sections, the forms and the map, and posts.
 
 The folder holds `studio.json` and:
 
@@ -18,6 +18,7 @@ design/sections/<type>.html the markup it is drawn with
 design/sections/<type>.js   its own script, where it moves (scripts.md)
 design/page.js              the page's own script, where the page moves as a whole (scripts.md)
 design/fonts/<name>.woff2   a font file, which the stylesheet's font faces name
+design/words/<language>.json the design's own fixed words in one of the site's languages, such as de.json
 ```
 
 ## Working loop
@@ -92,9 +93,13 @@ nothing. A push sends the whole folder: a section type left out is removed, refu
 
 Field kinds: `text` (with `max_length`), `rich_text`, `url`, `email`, `boolean`, `select` (with `options`, each a `key`
 and a `label`), `image`, and `repeater` (with `min_items`, `max_items` and its items' `fields`). Labels are in `en` and
-`de`; `description` is for agents. A new type starts at `version` 1; after that, leave the version as pulled. When
-a type's fields change, the push raises its version and moves every page's sections of it to the new fields, keeping
-each value whose field is still there and still takes it.
+`de`; `description` is for agents. Someone else's words as they said them, a customer's review or a quote, stand in
+the markup as HTML writes a quotation: a `<figure>` holding the words in a `<blockquote>` (a `<q>` within a line) and
+the reviewer in a `<cite>` inside its `<figcaption>`. A field bound anywhere inside a `blockquote` or `q` is read as
+theirs: the publish check leaves its words as they were written. A field of someone else's words that no quotation
+holds says `"quoted": true` in its definition. A new type starts at `version` 1; after that, leave the version
+as pulled. When a type's fields change, the push raises its version and moves every page's sections of it to the new
+fields, keeping each value whose field is still there and still takes it.
 
 A type's name is its own: never one of the platform's types, which `content-read` with `section_type.list` names.
 Keys, the type's own and each field's and option's, are lowercase letters, digits and underscores, starting with a
@@ -141,9 +146,12 @@ page doesn't show.
   another inside that page's entry; it may stand twice, such as a row for wide screens and a `<details>` fold-out for
   phones, which opens without a script), `legal-links` on a `<ul>` in the footer (the legal pages the site has, and
   the consent bar's button where it asks first; nothing on a site with neither), `logo` on `<a>`/`<span>`/`<div>`
-  (the logo, or the name), `year` on `<span>`/`<small>`/`<p>`. Header and footer only. The logo is the business details' own: add its file with
-  `design_upload`, set its id as `logo` with `core-site-update` (`business_details.set`), and `data-slot="logo"`
-  draws it, sized by the stylesheet, where the markup would otherwise carry a drawing of it on every page.
+  (the logo, or the name), `year` on `<span>`/`<small>`/`<p>`, `languages` on a `<ul>`/`<ol>` (each of the site's
+  languages by its own name, "Deutsch", "Русский", in a link with `hreflang` and `lang` to the page's translation
+  in it, else to its home page, the page's own with `aria-current="true"`; nothing on a site in one language).
+  Header and footer only. The logo is the business details' own: add its file with `design_upload`, set its id as
+  `logo` with `core-site-update` (`business_details.set`), and `data-slot="logo"` draws it, sized by the stylesheet,
+  where the markup would otherwise carry a drawing of it on every page.
 - `data-business`: `name`, `phone`, `email`, `street`, `postcode`, `town`, `address`, `opening-hours`; drawn only where
   the business gave it. On an `<a>`, only `phone` and `email`, which link themselves.
 - `data-slot="open-now"` on a `<p>`/`<span>`/`<div>` and `data-slot="hours-today"` on a `<ul>`/`<ol>`, anywhere
@@ -155,17 +163,34 @@ page doesn't show.
   `.hours-day-name`, `.hours-day-times`, `.hours-closed` on a closed day) and the note as `.hours-note`; the element
   has `data-live` once the script has run, so a rule under it can show today's day alone.
 
+- `data-word="<key>"`: one of the design's own words, in the page's language, on an empty element that holds text,
+  such as a menu button's or a slider's "Next"; `data-word-label="<key>"`: one as the element's `aria-label`, in
+  place of an `aria-label` of its own.
+
+## Words in each language
+
+A design's own fixed words stand in `design/words/<language>.json`, one file for each of the site's languages, by key:
+`{ "menu": "Menü", "next": "Weiter" }`. Each language holds every key the markup names, a file holds only keys the
+markup names and only for a language the site has, and the push names what is missing by file and line; a publish
+checks again, so a language added to the site later needs its file before the next publish. Words a client may change
+belong in a field.
+
+On a site in several languages the markup writes no text of its own, and no `aria-label`, `title` or `alt`: each would
+stand in one language on every language's pages, so the push refuses it by file and line. A name every language
+writes the same, such as a brand, stays as written inside `translate="no"`, which page translators leave too. On a
+site in one language, text in the markup is drawn as written.
+
 ## What markup may hold
 
 Elements: `section header footer nav article aside div span p h2–h6 ul ol li dl dt dd blockquote address strong em b i
 small s sub sup abbr cite code del ins kbd mark pre q time u wbr br hr figure figcaption img a details summary label
 input button canvas table caption thead tbody tfoot tr th td`, and SVG icons from `svg g path circle ellipse rect line
-polyline polygon`. Attributes: `class id role title lang dir hidden tabindex aria-*`, plus each element's own (`href`
-on `a`, `type name value checked` on `input`, with `type` `radio`, `checkbox` or `range`, and `min max step` on a
-range, `type="button"` on `button`, `for` on `label`, `open` on `details`, `start reversed` on `ol`, `value` on `li`,
-`datetime` on `time`, `del` and `ins`, `width height` on `canvas` (`scripts.md`), `colspan rowspan scope` on table
-cells, SVG geometry and paint), `data-script` where the section's own script acts, and `data-page-part` where the
-page's script does (`scripts.md`).
+polyline polygon`. Attributes: `class id role title lang dir hidden tabindex translate aria-*`, plus each element's
+own (`href` on `a`, `type name value checked` on `input`, with `type` `radio`, `checkbox` or `range`, and `min max
+step` on a range, `type="button"` on `button`, `for` on `label`, `open` on `details`, `start reversed` on `ol`,
+`value` on `li`, `datetime` on `time`, `del` and `ins`, `width height` on `canvas` (`scripts.md`), `colspan rowspan
+scope` on table cells, SVG geometry and paint), `data-script` where the section's own script acts, and
+`data-page-part` where the page's script does (`scripts.md`).
 
 SVG in markup is for small icons of a few shapes. A logo, a photo or a drawing traced from a picture is a file: add it
 with `design_upload` and draw it through `data-slot="logo"` (the logo, set as the business details' `logo`) or an
@@ -195,7 +220,7 @@ its own, and no `<main>`. So:
   among the sections), which match differently there.
 
 **What the platform draws around the design,** on every page: the consent bar, a skip link to the content, the main
-content and the pages' language (`lang="de"`). Never restyle `.skip-link` out of sight on focus. The consent bar stands
+content and the page's language (`lang`). Never restyle `.skip-link` out of sight on focus. The consent bar stands
 above the page, so the design's own sticky bands stay lower (`z-index` under 90) and never cover it.
 
 **The site's own look:** the site starts on one of template A's looks (such as Sand), and everything the stylesheet
@@ -264,7 +289,7 @@ design's own, the business's details in them through `data-business`, so they fo
 platform draws only what a design can't safely: the working form and the map, each into an empty `<div>` the section
 marks, once: `data-slot="contact-form"`, `data-slot="application-form"` or `data-slot="map"`. A section holding one
 runs no script of its own, so nothing of the design's reaches what a visitor sends or agrees to: put what moves in a
-section beside it. A form posts to the site's enquiries or applications, in the site's "Sie" or "du", with its consent
+section beside it. A form posts to the site's enquiries or applications, in the site's form of address, with its consent
 line and send button; the editor shows it without sending. Restyle it by `.site-form` (with `.contact-form` or
 `.application-form`), `.field-input`, `.form-consent`, `.button-primary` and the application's file drop
 `.application-drop`. The map loads once the visitor agrees; until then it is a card that loads nothing,

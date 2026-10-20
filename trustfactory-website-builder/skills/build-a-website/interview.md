@@ -19,12 +19,13 @@ needs the legal ones. After each group, save the answers with `core-site-update`
 is lost if the talk stops.
 
 1. **Who:** the business's registered name, its legal form and the person responsible for it (the owner, or who
-   represents the company). All needed. The legal form as choices: Einzelunternehmen oder freier Beruf, GmbH,
-   UG (haftungsbeschränkt), GbR; any other typed. A registered form (GmbH, UG, e. K., OHG, KG, AG and the like) also
-   needs its register court and number, such as "Amtsgericht Musterstadt, HRB 12345": ask in the same group.
-2. **Where and how to reach them:** street and house number, postcode and town, phone and e-mail. All needed.
-3. **A regulated profession** (a chamber, a protected title such as Architekt or Steuerberater, a permit from an
-   authority, a required liability insurance): ask whether it applies; where it does, the imprint needs the chamber,
+   represents the company). All needed. The legal form as choices, the common forms of the business's country; any
+   other typed. A form entered in a commercial register also needs the register and the number: ask in the same
+   group.
+2. **Where and how to reach them:** the country, street and house number, postcode and town, phone and e-mail. All
+   needed.
+3. **A regulated profession** (a chamber, a protected title, a permit from an authority, a required liability
+   insurance): ask whether it applies; where it does, the imprint needs the chamber,
    the title and the country that granted it, the professional rules and where they are published, the supervisory
    authority, and the insurer and the area it covers. Ask only the parts that apply.
 4. **Optional, one group at a time; skip whatever the client doesn't have:**
@@ -38,10 +39,10 @@ is lost if the talk stops.
    The logo and photos are added with `design_upload`; the logo's file id then goes to the business details
    (`core-site-update`, `business_details.set`, `logo`). The services, prices and areas go into the pages'
    words, not the details.
-5. **Which pages** beside the home page, as choices to tick: Leistungen (with a page per service), Über uns, Karriere,
-   Blog.
+5. **Which pages** beside the home page, as choices to tick, named in the client's language: the services (with a
+   page per service), about the business, careers, a blog.
 6. **Legal pages,** a plain yes or no: does the site get our imprint, privacy policy and accessibility statement,
-   written for German law, in German? On a yes, add them (`SKILL.md`, step 1); the imprint then needs the
+   written for German law, in the site's languages? On a yes, add them (`SKILL.md`, step 1); the imprint then needs the
    details of groups 1 to 3. On a no, the business may give its own texts, written as pages of the site and marked as
    its legal pages, or have none.
 
@@ -52,3 +53,12 @@ is lost if the talk stops.
   built with gaps, but not published while our imprint lacks a detail it draws.
 - Ask: "Anything else the site should say or show?"
 - Then the look (`SKILL.md`, step 3).
+
+## German sites
+
+For a business in Germany, and pages in German:
+- The legal form as choices: Einzelunternehmen oder freier Beruf, GmbH, UG (haftungsbeschränkt), GbR; any other
+  typed. A registered form (GmbH, UG, e. K., OHG, KG, AG and the like) also needs its register court and number, such
+  as "Amtsgericht Musterstadt, HRB 12345" (group 1).
+- A protected title is one such as Architekt or Steuerberater (group 3).
+- The pages to tick: Leistungen (with a page per service), Über uns, Karriere, Blog (group 5).

@@ -63,7 +63,7 @@ A script and its mark come together: a mark without a script, or a script the ma
 All it reaches is `root` (the page's script: its `parts`) and what lies under it, its view and its own records. The
 push checks every name against these lists, which hold all a script may use. `new` makes only an `AbortController`,
 a `Date` or an `Intl.DateTimeFormat`; the current time is read, as `new Date()`, `Date.now()` or
-`new Intl.DateTimeFormat('de-DE', …)` give it, never set; a canvas is drawn on through `getContext('2d')` only.
+`new Intl.DateTimeFormat(…)` give it, never set; a canvas is drawn on through `getContext('2d')` only.
 
 - **Names it needn't declare:** `AbortController`, `Array`, `Boolean`, `Date`, `Infinity`, `Intl`, `Math`, `NaN`,
   `Number`, `String`, `cancelAnimationFrame`, `clearInterval`, `clearTimeout`, `isNaN`, `matchMedia`, `parseFloat`,
@@ -161,5 +161,5 @@ export function attach(root) {
 ```
 
 Its markup: `<section class="trocknung" data-script="trocknung">` holding each step as `<div class="schritt">` and
-`<button type="button" class="weiter">Nächster Schritt</button>`. Without the script every step shows, one under the
-other, so the page reads whole.
+`<button type="button" class="weiter" data-word="next"></button>`, its words in `design/words/` (`design-folder.md`).
+Without the script every step shows, one under the other, so the page reads whole.

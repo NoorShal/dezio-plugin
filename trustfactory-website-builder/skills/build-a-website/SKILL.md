@@ -15,14 +15,14 @@ license: Contains a few lines adapted from Anthropic's frontend-design and Paul 
    details (`core-read` with `business_details.get`), the brief, or the client's own words; never invented, estimated
    or rounded up. No page suggests an office or a workshop where the business has none. Where a sentence needs a fact
    the business didn't give, leave the sentence out and note the fact with `template_sites-pages` `facts.ask`, with
-   the page's id and the fact in the client's words, such as "Gründungsjahr": the share link's bar lists it for the
-   client, never the page. Once the client gives it, write the sentence and take the fact off with `facts.done`. A
-   marker such as `[FEHLT: …]` left in a text stops a publish. Step 6, check 4, is the claim check.
+   the page's id and the fact in the client's words and language, such as "year founded": the share link's bar lists
+   it for the client, never the page. Once the client gives it, write the sentence and take the fact off with
+   `facts.done`. A marker such as `[MISSING: …]` left in a text stops a publish. Step 6, check 4, is the claim check.
 3. **Words are saved as drafts** with `content-write` as each page is written, never left in the chat alone: the
    Studio holds them, and the share link shows them to the client.
-4. **"Sie" by default.** "Du" only where the client asks for it or their own texts use it, and then throughout, never
-   mixed (a quoted review aside), the site set to it (`core-site-update`, `site.set_address_form`), so the platform's
-   own texts say "du" too.
+4. **The formal form of address by default,** in a language that has one. The informal one only where the client
+   asks for it or their own texts use it, and then throughout, never mixed (a quoted review aside), the site set to it
+   (`core-site-update`, `site.set_address_form`), so the platform's own texts use it too.
 5. **The design's own section types,** beside the platform's three, the Google reviews, before and after, and the
    video, and our legal pages where the client chose them; the contact form, the job application form and the map
    stand in the design's own sections through their slots (`design-folder.md`). Those do what a design can't.
@@ -60,15 +60,18 @@ back to what was asked and faults looked into; tell the person so when they ask.
 A custom site is a Website Studio site with a design of its own. Everything around the design is the platform's and
 never rebuilt by hand: the contact form and its enquiries, the consent bar, the search texts, the menu, publishing,
 the share link and, where the client chooses them, our imprint, privacy policy and accessibility statement, written for
-German law, in German, from the business's details at each publish.
+German law, in each of the site's languages, from the business's details at each publish. A site in several languages
+is built as "Sites in several languages" says, below.
 
 - Call `rules-get` once, then `core-read` with `site.list_mine` to find a site's id, or with `organisation.list_mine`
   for a new site's organisation.
-- **A new site:** `core-site-new` with the business's name, `languages: ["de"]`, `default_language: "de"`,
-  `time_zone: "Europe/Berlin"`, `modules: ["content", "template_sites", "consent"]` (add `"blog"` for a Ratgeber),
-  `address_form: "informal"` where the client says "du", and every business detail you have; leave out the wizard's
-  steps, which a custom site doesn't need. Then `template_sites-write` with `site.set_up`, the base every custom site
-  stands on.
+- **A new site:** first ask, where the brief doesn't say, which languages its pages are written in, which of them is
+  the main one, and where the business is. Then `core-site-new` with the business's name, those `languages` and
+  `default_language`, the `time_zone` of the business's place, such as `"Europe/Berlin"` (every date the site shows
+  follows it), `modules: ["content", "template_sites", "consent"]` (add `"blog"` for a blog), `address_form:
+  "informal"` where the site addresses its visitors informally (rule 4), and every business detail you have, its
+  `country` among them; leave out the wizard's steps, which a custom site doesn't need. Then `template_sites-write`
+  with `site.set_up`, the base every custom site stands on.
 - **An existing template site** keeps its record, its pages and its client's access; its template pages stay and are
   rewritten with the new section types. Until they are, the publish check suggests each template section by name,
   as the design doesn't style it.
@@ -78,9 +81,9 @@ German law, in German, from the business's details at each publish.
   (`design-folder.md`, "Working loop"). Its pages, the contact page among them, are written in the design's own section
   types (step 4).
 - Ask, as a plain yes or no, whether the site gets our legal pages. On a yes, `template_sites-pages` with
-  `legal.add_pages` and `language: "de"` adds the three, each linked in the footer. On a no, pages of the business's
-  own, written with `content-write` and marked with `page.save`'s `legal_page`, are linked the same, or the site has
-  none.
+  `legal.add_pages` adds the three to a language's pages, in its words, each linked in the footer: once for each of
+  the site's languages, `language` its tag, such as `"de"`. On a no, pages of the business's own, written with
+  `content-write` and marked with `page.save`'s `legal_page`, are linked the same, or the site has none.
 
 ## 2. The brief and the business's facts
 
@@ -95,8 +98,8 @@ Read `interview.md` when this step starts.
   (`business_details.set`). Then take its pictures, before any design: `template_sites-pages` with
   `picture.import_from_site`, waited on with `job_wait`; `template_sites-read` with `picture.get_import`
   says what it kept and why, and `picture.get_contact_sheet` shows them. Look at them before planning the look.
-- Where the client has texts of their own, their current website or what they send, read whether they say "du" or
-  "Sie", write the site the same way, and set the site to it (rule 4).
+- Where the client has texts of their own, their current website or what they send, read which form of address they
+  use, write the site the same way, and set the site to it (rule 4).
 - `core-read` with `business_details.get` shows the facts the site holds, and what our imprint still needs.
 
 ## 3. The home page, until the client approves it
@@ -138,16 +141,16 @@ its pictures.
 
 Read `search.md` when this step starts.
 
-- The pages the client chose (`interview.md`, group 5): Leistungen with a page per service, Über uns, Karriere where
-  the business is hiring. Make each with `content-write` (`page.create`), then write it (`page.save`) in the design's
-  own section types; never with `template_sites-pages`' `page.add`, which writes the template's sections and which a
-  custom site refuses.
-- The contact page, `kontakt`, made the same way: a section of the design's own with the form
+- The pages the client chose (`interview.md`, group 5), each named in its page's language: the services with a page
+  per service, one about the business, and careers where the business is hiring. Make each with `content-write`
+  (`page.create`), then write it (`page.save`) in the design's own section types; never with `template_sites-pages`'
+  `page.add`, which writes the template's sections and which a custom site refuses.
+- The contact page, made the same way: a section of the design's own with the form
   (`data-slot="contact-form"`), the business's details through `data-business`, never typed in, and the map
   (`data-slot="map"`) where the client wants one.
-- The menu: `page.move` orders it, and `page.set_menu_parent` lists a service's page under Leistungen, which its
-  breadcrumb then reads ("Start > Leistungen > Fassadenanstrich"); two levels deep at most. A page the menu names gets
-  built, or its item waits until it is.
+- The menu: `page.move` orders it, and `page.set_menu_parent` lists a service's page under the services page, which
+  its breadcrumb then reads, from the home page down; two levels deep at most. A page the menu names gets built, or
+  its item waits until it is.
 - The links lead to the site's own pages, as the new site replaces the business's current one; links elsewhere are
   for other services (`design-folder.md`, "What markup may hold").
 - Share the link again; the client approves the subpages before the modules.
@@ -165,7 +168,8 @@ one on.
 - **Reviews:** `external_ratings-write` with `listing.set_link` names the business's Google listing and fetches its
   reviews; the `google_reviews` section shows them. Other reviews only as the client hands them over, exactly as
   written, with the reviewer's first name or initial, the place and the platform; a rating with its platform, the
-  number of reviews and the date it was read. A review is never written, reworded or improved.
+  number of reviews and the date it was read. A review is never written, reworded or improved; the design's section
+  quotes it, its words in a `<blockquote>` and the reviewer in a `<cite>` (`design-folder.md`, "A section type").
 - **Blog:** `blog-write` (`post.create`, `post.save`, `post.publish`). A post is online as soon as it is published; one
   holding a section type a design push added or changed since the last publish waits for the site's next publish, so
   publish it with the site.
@@ -210,7 +214,8 @@ Then say, by the site's address, whether search engines can find it (`core-read`
 
 Connecting the business's own domain is the launch; there is no other step.
 
-1. `core-site-setup` with `site.set_address` gives the site the domain.
+1. `core-site-setup` with `site.set_address` gives the main language the domain; on a site in several languages,
+   each other language moves to it with the same tag ("Sites in several languages").
 2. Publish (step 7): a new address is served only from a publish drawn for it.
 3. `template_sites-read` with `host.get_dns` names the one DNS record the domain's owner adds where it doesn't point
    here yet. Hand it over as it is.
@@ -220,3 +225,54 @@ Connecting the business's own domain is the launch; there is no other step.
    `robots.txt` once: the sitemap lists the pages, and `robots.txt` names it.
 6. From then on, a change visitors would see answers a preview first (`rules-get`, `live_preview`): confirm it as the
    person asks.
+
+## Sites in several languages
+
+One design serves every language. The pages are written in the main language first, then each other language gets a
+translation of every page, written in it.
+
+- **The platform's own texts,** its buttons, forms and our legal pages' words, are made for a language the first time
+  any site has it, in about a minute, starting when the site is made. A step that needs them sooner answers
+  `template_sites_texts_not_ready`, saying what to do: wait for the job they are made in with `job_wait`, or start
+  them with `core-site-setup` `text_set.make` and wait for its job; then the step runs again.
+- **The contact form and its words are the platform's,** drawn in each page's language from the site's texts.
+- **The design, once:** one header, footer, stylesheet and set of section types for every language, with the design's
+  own fixed words in `design/words/<language>.json`, a file for each language (`design-folder.md`, "Words in each
+  language"). Its `languages` slot, in the header or the footer, leads visitors to each page's translation
+  (`design-folder.md`, "Bindings").
+- **The main language first:** the home page and the subpages are made in it (`page.create` with its `language`) and
+  approved by the client, as steps 3 and 4 say.
+- **Then each other language, page by page in the menu's order,** a page before the pages listed under it:
+  `content-write` with `page.translate`, the page's id, the `language`, and the `title` and `slug` written in that
+  language, such as `servicios` for `services`. It makes a draft in the language with the page's sections, heading,
+  search texts and pictures, joins it to the page as its translation, and lists it in the menu under the translation
+  of the page it stands under, so each language's menu follows the main one. Then write every text of the draft in
+  its language with `page.save` (`page.get` gives the revisions): the sections' values, the `heading`, the
+  `seo_title` and the `seo_description` (`search.md`). A translation says what its page says, as someone writing in
+  the language would put it: the same facts, none added (rule 2), in the site's form of address (rule 4).
+- **Its pictures, described in the language:** a picture keeps a description for each language, and a page shows its
+  own language's. Describe each picture of a translation in its language with the design folder's `design_describe`,
+  many at once, each with that `language`, or `core-file-write` with `file.set_details` and its `language`; a page
+  with a picture not described in its language isn't published, and the publish check names each.
+- **A page written on its own** for one language, rather than translated, joins its counterpart in another language
+  with `page.link_translation`, `of_page_id` that page's id, so the two are each other's versions.
+- **Blog posts** the same way: `blog-write` with `post.translate`, the post's id, the `language`, and its `title`
+  and `slug` in the language, then `post.save` and `post.publish`; a post written on its own joins its counterpart
+  with `post.link_translation`.
+- **Our legal pages,** where the client chose them: `legal.add_pages` once for each language (step 1).
+- **The checks of step 6** run on every language's pages.
+- **The share link** shows every language's drafts: the main one at its root, each other under its tag, such as
+  `…/es/`.
+- **A web address for each language** before the first publish: `site.set_up` answers `languages_without_address`,
+  and `core-site-setup` with `site.set_address` gives each its base address, the main language's first, at the
+  domain's root, and each other under its tag there, such as `https://www.example.com/es`.
+
+## German sites
+
+On a page in German:
+- **"Sie" by default.** "Du" only where the client asks for it or their own texts use it (rule 4); a site set to
+  `"informal"` says "du" in the platform's own texts too.
+- A fact noted with `facts.ask` is named in German, such as "Gründungsjahr", and the marker for one is `[FEHLT: …]`
+  (rule 2).
+- The subpages are Leistungen with a page per service, Über uns and Karriere, and the contact page is `kontakt`; a
+  service's breadcrumb reads "Start > Leistungen > Fassadenanstrich" (step 4).

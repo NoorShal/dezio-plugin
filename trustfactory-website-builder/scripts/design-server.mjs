@@ -2,12 +2,16 @@
 // The design folder as tools Claude calls: a small MCP server Claude Code starts from the plugin's .mcp.json with the
 // key given at install, so a design's files go from disk to the Studio without passing through Claude's context.
 // Newline-delimited JSON-RPC over stdin and stdout, as MCP's stdio transport, with its initialize handshake.
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline';
 
 import { init, pull, push, Refused, siteOf } from './design-folder.mjs';
 import { MOST_SECONDS, waitForJob } from './jobs.mjs';
 import { describe, upload } from './pictures.mjs';
+
+/** The plugin's version, as its manifest gives it, so the server names the one it ships with. */
+const { version } = JSON.parse(readFileSync(new URL('../.claude-plugin/plugin.json', import.meta.url), 'utf8'));
 
 /** The protocol revisions it speaks, newest first; a client asking for another gets the newest. */
 const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
@@ -21,6 +25,10 @@ const FOLDER = {
 /** What a picture's entry may set of it, beside what names the picture. */
 const DETAILS = {
   alt: { type: 'string', description: 'What the picture shows, for those who can’t see it.' },
+  language: {
+    type: 'string',
+    description: 'The language the alt text is written in, one of the site’s; its main language where left out.',
+  },
   decorative: { type: 'boolean', description: 'true for a picture that only decorates and needs no alt text.' },
   credit: { type: 'string', description: 'Whom the picture’s credit is due to, which the imprint names.' },
 };
@@ -98,7 +106,7 @@ const TOOLS = [
   {
     name: 'design_describe',
     description:
-      'Sets the alt text, the decorative mark or the credit of pictures already in the site’s media library, up to 30 at once, each by its file id, such as the pictures taken from the client’s current website.',
+      'Sets the alt text in one of the site’s languages, the decorative mark or the credit of pictures already in the site’s media library, up to 30 at once, each by its file id, such as the pictures taken from the client’s current website.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -184,7 +192,7 @@ async function resultOf(method, params) {
       return {
         protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: 'website-studio-design-folder', version: '0.2.16' },
+        serverInfo: { name: 'website-studio-design-folder', version },
       };
     }
     case 'ping':

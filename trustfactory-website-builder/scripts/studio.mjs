@@ -23,7 +23,8 @@ The folder (default: the current one) holds studio.json, which names the site, a
   it does) beside design/sections/<type>.html (its markup) and, where it moves, design/sections/<type>.js (its own
   script, export function attach(root, view), given each element its markup marks data-script="<type>"),
   design/fonts/<name>.woff2, the font files the stylesheet's font faces name, as url("fonts/<name>.woff2"), which a
-  push adds to the site.
+  push adds to the site, and design/words/<language>.json, the design's own words in each of the site's languages,
+  by the keys its markup names with data-word and data-word-label.
 
 Settings, from the environment: TF_STUDIO_KEY, an agent key made in the Studio (never printed); TF_STUDIO_API, the
 Studio's API (default the online Studio, https://website-studio-api.vercel.app); TF_STUDIO_ADMIN, the Studio itself,
