@@ -7,6 +7,7 @@ import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { init, pull, push, Refused } from './design-folder.mjs';
+import { ONLINE } from './studio-addresses.mjs';
 
 const USAGE = `Usage: node studio.mjs <command> [--dir <folder>]
 
@@ -27,8 +28,8 @@ The folder (default: the current one) holds studio.json, which names the site, a
   by the keys its markup names with data-word and data-word-label.
 
 Settings, from the environment: TF_STUDIO_KEY, an agent key made in the Studio (never printed); TF_STUDIO_API, the
-Studio's API (default the online Studio, https://website-studio-api.vercel.app); TF_STUDIO_ADMIN, the Studio itself,
-for the preview's address (default https://website-studio-admin.vercel.app).`;
+Studio's API (default the online Studio, ${ONLINE.api}); TF_STUDIO_ADMIN, the Studio itself, for the preview's
+address (default ${ONLINE.admin}).`;
 
 /** Pushes the folder, printing what was saved or each refused file and line; whether it was saved. */
 async function pushed(dir) {

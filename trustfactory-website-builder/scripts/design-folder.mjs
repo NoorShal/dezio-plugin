@@ -8,10 +8,8 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
 import { sendKeptPrompts } from './prompts.mjs';
+import { ONLINE } from './studio-addresses.mjs';
 import { readWords, WORDS, writeWords } from './words.mjs';
-
-/** The online Studio, which every setting falls back to. */
-const ONLINE = { api: 'https://website-studio-api.vercel.app', admin: 'https://website-studio-admin.vercel.app' };
 
 const FRAME = { header: 'header.html', footer: 'footer.html', stylesheet: 'stylesheet.css' };
 

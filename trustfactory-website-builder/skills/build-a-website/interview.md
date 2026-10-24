@@ -31,14 +31,19 @@ is lost if the talk stops.
 4. **Optional, one group at a time; skip whatever the client doesn't have:**
    - the logo, and a brand name where the site should call the business otherwise than its registered name;
    - the opening hours;
-   - the services, with prices where they want them shown, and the towns and areas served;
-   - the story (the year it started, what sets it apart), the owner's qualification, the team;
+   - the services, with prices where they want them shown, and the towns and areas served: how far around its town
+     it works, or the whole country;
+   - the year it started and how many people work there;
+   - the story (what sets it apart), the owner's qualification, the team;
    - the social profiles and the Google profile;
    - their own photos, beyond those taken from their current website.
 
    The logo and photos are added with `design_upload`; the logo's file id then goes to the business details
-   (`core-site-update`, `business_details.set`, `logo`). The services, prices and areas go into the pages'
-   words, not the details.
+   (`core-site-update`, `business_details.set`, `logo`). The year it started, the team's size and how far it works
+   go there too (`founding_year`, `team_size`, `service_area`: `{ "kind": "radius", "km": 25 }` or
+   `{ "kind": "nationwide" }`), as its texts, structured data and imprint read them. The services, prices and towns go
+   into the pages' words, not the details. Opening hours sent without a `note` keep the note they had, such as a
+   holiday notice: send `note: null` to take it away.
 5. **Which pages** beside the home page, as choices to tick, named in the client's language: the services (with a
    page per service), about the business, careers, a blog.
 6. **Legal pages,** a plain yes or no: does the site get our imprint, privacy policy and accessibility statement,

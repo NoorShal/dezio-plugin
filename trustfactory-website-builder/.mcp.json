@@ -11,8 +11,8 @@
       "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/design-server.mjs"],
       "env": {
         "TF_STUDIO_KEY": "${user_config.studio_key}",
-        "TF_STUDIO_API": "${TF_STUDIO_API:-https://website-studio-api.vercel.app}",
-        "TF_STUDIO_ADMIN": "${TF_STUDIO_ADMIN:-https://website-studio-admin.vercel.app}"
+        "TF_STUDIO_API": "${TF_STUDIO_API:-}",
+        "TF_STUDIO_ADMIN": "${TF_STUDIO_ADMIN:-}"
       }
     }
   }

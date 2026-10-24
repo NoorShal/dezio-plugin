@@ -30,7 +30,7 @@ license: Contains a few lines adapted from Anthropic's frontend-design and Paul 
 7. **The home page is approved before any subpage is built:** every subpage uses its header, footer, stylesheet and
    section types, so none is redone.
 8. **A paid step shows its cost and is confirmed once:** reading a current website, taking its pictures, making
-   pictures.
+   pictures, having the AI write a translation.
 9. **Nothing is public before a publish, and search engines find the site only on the business's own domain,** once
    that points here; a test address stays hidden from them.
 10. **Read a step's reference when the step starts,** and again when coming back to it after a long pause or after the
@@ -206,8 +206,9 @@ one on.
 
 Then say, by the site's address, whether search engines can find it (`core-read` with `site.list_mine` answers
 `indexing`):
-- **On a test address** (such as `….vercel.app`): online for whoever has the link, and hidden from search engines,
-  with no sitemap, as it should be. Offer the own domain as the launch (step 8).
+- **On a test address** (under one of the test domains `core-read`'s `hostname.list` names): online for whoever has
+  the link, and hidden from search engines, with no sitemap, as it should be. Offer the own domain as the launch
+  (step 8).
 - **On its own domain, pointing here:** visible to search engines, with its `sitemap.xml` and `llms.txt`.
 
 ## 8. The own domain
@@ -250,6 +251,12 @@ translation of every page, written in it.
   its language with `page.save` (`page.get` gives the revisions): the sections' values, the `heading`, the
   `seo_title` and the `seo_description` (`search.md`). A translation says what its page says, as someone writing in
   the language would put it: the same facts, none added (rule 2), in the site's form of address (rule 4).
+- **Or have the AI write it,** where the person asks for that: `content-write` with `page.write_translation`, the
+  page's id and the `language`, writes the whole translation in a job by the rules above, every text, the heading,
+  the search texts, the address and the pictures' descriptions in the language, and makes the draft only once all of
+  it holds. It is paid, its preview showing the cost (rule 8). Wait on its job with `job_wait`; the draft then stands
+  in `page.list` in that language with the page's `translation_id`, and `page.list_translation_writes` says why a try
+  wrote nothing. Read the draft before handing it over, as step 6's claim check does.
 - **Its pictures, described in the language:** a picture keeps a description for each language, and a page shows its
   own language's. Describe each picture of a translation in its language with the design folder's `design_describe`,
   many at once, each with that `language`, or `core-file-write` with `file.set_details` and its `language`; a page
@@ -257,8 +264,8 @@ translation of every page, written in it.
 - **A page written on its own** for one language, rather than translated, joins its counterpart in another language
   with `page.link_translation`, `of_page_id` that page's id, so the two are each other's versions.
 - **Blog posts** the same way: `blog-write` with `post.translate`, the post's id, the `language`, and its `title`
-  and `slug` in the language, then `post.save` and `post.publish`; a post written on its own joins its counterpart
-  with `post.link_translation`.
+  and `slug` in the language, then `post.save` and `post.publish`, or `post.write_translation` for the AI to write
+  it; a post written on its own joins its counterpart with `post.link_translation`.
 - **Our legal pages,** where the client chose them: `legal.add_pages` once for each language (step 1).
 - **The checks of step 6** run on every language's pages.
 - **The share link** shows every language's drafts: the main one at its root, each other under its tag, such as

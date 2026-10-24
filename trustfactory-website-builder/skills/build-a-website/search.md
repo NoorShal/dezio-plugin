@@ -16,9 +16,9 @@ At every publish, for every page, without the design's help:
 By the address it is served at:
 - **the business's own domain, once it points here:** visible to search engines, with `sitemap.xml`, a `robots.txt`
   that names it, and `llms.txt`;
-- **a test address** (such as `….vercel.app`), and the own domain until it points here: every page hidden from search
-  engines, its `robots.txt` naming no sitemap, and no sitemap or `llms.txt`. That is as it should be, never a fault to
-  report.
+- **a test address** (under one of the test domains `core-read`'s `hostname.list` names), and the own domain until
+  it points here: every page hidden from search engines, its `robots.txt` naming no sitemap, and no sitemap or
+  `llms.txt`. That is as it should be, never a fault to report.
 
 A design adds no structured data of its own: its own section types say what they list with `holds` (questions with
 their answers, the business's services, or one job; `design-folder.md`), and the platform writes the rest from the

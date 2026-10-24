@@ -8,6 +8,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 import { keepPrompt, typedPrompt } from './prompts.mjs';
+import { ONLINE } from './studio-addresses.mjs';
 
 /** The site of the design folder the prompt was given in, from its studio.json; none outside one. */
 function siteOf(cwd) {
@@ -39,7 +40,7 @@ async function main() {
     await keepPrompt({ session, prompt, cwd });
     return;
   }
-  const api = process.env.TF_STUDIO_API ?? 'https://website-studio-api.vercel.app';
+  const api = process.env.TF_STUDIO_API || ONLINE.api;
   await fetch(new URL(`/v1/sites/${encodeURIComponent(site)}/template_sites/design_prompt:record`, api), {
     method: 'POST',
     headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
