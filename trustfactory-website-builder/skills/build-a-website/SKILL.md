@@ -97,7 +97,8 @@ Read `interview.md` when this step starts.
   value with the page and words it stands in. Set only what the client confirms, with `core-site-update`
   (`business_details.set`). Then take its pictures, before any design: `template_sites-pages` with
   `picture.import_from_site`, waited on with `job_wait`; `template_sites-read` with `picture.get_import`
-  says what it kept and why, and `picture.get_contact_sheet` shows them. Look at them before planning the look.
+  counts what it kept and why it left the rest out, and `picture.get_contact_sheet` shows the kept ones, a sheet at a
+  time (`pictures.md`, step 3). Look at them before planning the look.
 - Where the client has texts of their own, their current website or what they send, read which form of address they
   use, write the site the same way, and set the site to it (rule 4).
 - `core-read` with `business_details.get` shows the facts the site holds, and what our imprint still needs.

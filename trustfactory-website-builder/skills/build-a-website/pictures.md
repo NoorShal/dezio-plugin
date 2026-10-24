@@ -23,7 +23,8 @@ a demanding customer would and puts it in place. A place it can't fill well stay
 3. **The pictures from the current site,** where `picture.import_from_site` took them (`SKILL.md`, step 2):
    `template_sites-read` with `picture.get_contact_sheet` shows them as one image of numbered thumbnails, up to 30 a
    sheet, and lists each number's file id, the page and heading it stood under, its old description and its size
-   class; its `next_cursor`, passed as `after`, shows the next sheet. The numbers start again on each sheet, so keep a
+   class; its `next_cursor`, passed as `after`, shows the next sheet. It takes only the site's id and `after`, never
+   an import's id: every import's pictures are on it together. The numbers start again on each sheet, so keep a
    picture by its file id. An `opening` one (1,000 pixels wide or more) fits the opening, a `tile` one (600 or more) a
    card or tile, a `small` one only a small place. One marked `repeated` stood on many pages of the old site, often as
    its header photo. Put each in its place with `content-write` (`page.save`, the field's value the file's id), then
