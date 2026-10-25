@@ -2,7 +2,7 @@
   "mcpServers": {
     "website-studio": {
       "type": "http",
-      "url": "${TF_STUDIO_API:-https://website-studio-api.vercel.app}/mcp",
+      "url": "${TF_STUDIO_API:-https://api.heydezio.com}/mcp",
       "headers": { "Authorization": "Bearer ${user_config.studio_key}" }
     },
     "design-folder": {

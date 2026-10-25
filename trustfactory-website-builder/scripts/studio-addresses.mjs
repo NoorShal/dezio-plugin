@@ -4,6 +4,6 @@
 
 /** The online Studio, which every setting falls back to. */
 export const ONLINE = {
-  api: 'https://website-studio-api.vercel.app',
-  admin: 'https://website-studio-admin.vercel.app',
+  api: 'https://api.heydezio.com',
+  admin: 'https://app.heydezio.com',
 };
