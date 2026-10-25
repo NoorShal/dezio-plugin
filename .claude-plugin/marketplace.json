@@ -1,16 +1,16 @@
 {
-  "name": "website-studio",
+  "name": "dezio",
   "owner": {
     "name": "Trustfactory"
   },
   "metadata": {
-    "description": "Trustfactory's plugins for building websites on Website Studio."
+    "description": "Trustfactory's plugins for building websites on Dezio."
   },
   "plugins": [
     {
-      "name": "trustfactory-website-builder",
-      "source": "./trustfactory-website-builder",
-      "description": "Build custom websites on Website Studio from Claude Code: the Studio's tools, its rules, and a design folder pushed to a site's drafts."
+      "name": "dezio",
+      "source": "./dezio",
+      "description": "Build custom websites on Dezio from Claude Code: its tools, its rules, and a design folder pushed to a site's drafts."
     }
   ]
 }

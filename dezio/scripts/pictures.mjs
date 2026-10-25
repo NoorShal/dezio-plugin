@@ -1,9 +1,10 @@
-// Pictures from this computer into a site's media library, with the plugin's own key, and their descriptions: what
+// Pictures from this computer into a site's media library, as the signed-in person, and their descriptions: what
 // design-server.mjs offers Claude as tools beside the design folder's. Plain Node, no packages.
 import { readFile } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 
-import { call, Refused, settings, siteOf } from './design-folder.mjs';
+import { call, Refused, siteOf } from './design-folder.mjs';
+import { apiOrigin, signedFetch } from './sign-in.mjs';
 
 /** The most pictures one call adds or describes. */
 const MOST_PICTURES = 30;
@@ -49,18 +50,17 @@ function outcome(lines, failed) {
 }
 
 /**
- * A picture's bytes sent to the site's upload address with the agent key, as a file of its library: the file. A busy
- * Studio's answer is waited out once, as long as it asks to wait.
+ * A picture's bytes sent to the site's upload address as the signed-in person, as a file of its library: the file. A
+ * busy Dezio's answer is waited out once, as long as it asks to wait.
  */
 async function sendPicture(site, path) {
-  const { key, api } = settings();
-  const address = new URL(`/v1/sites/${encodeURIComponent(site)}/uploads`, api);
+  const address = new URL(`/v1/sites/${encodeURIComponent(site)}/uploads`, apiOrigin());
   address.searchParams.set('name', basename(path));
   const body = await readFile(path);
   for (let tried = false; ; tried = true) {
-    const response = await fetch(address, {
+    const response = await signedFetch(address, {
       method: 'POST',
-      headers: { authorization: `Bearer ${key}`, 'content-type': 'application/octet-stream' },
+      headers: { 'content-type': 'application/octet-stream' },
       body,
     });
     const answer = await response.json().catch(() => null);
@@ -73,7 +73,7 @@ async function sendPicture(site, path) {
       throw new Refused(response.status, answer);
     }
     if (answer?.status !== 'done') {
-      throw new Error(`The Studio wants a person's ${String(answer?.status)} first; finish it in the Studio.`);
+      throw new Error(`Dezio wants a person's ${String(answer?.status)} first; finish it in Dezio.`);
     }
     return answer.output;
   }

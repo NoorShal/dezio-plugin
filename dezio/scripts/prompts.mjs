@@ -1,7 +1,6 @@
-// The prompts a designer gives Claude Code that the hook can't send yet, as those before their design folder is linked
-// to a site: kept in the plugin's own data folder, for a day at most, until design_init or design_push sends them with
-// the folder's site. Prompts given outside any design folder are kept the same day too, then go. Plain Node, no
-// packages.
+// The prompts a designer gives Claude Code, which the hook keeps in the plugin's own data folder, for a day at most,
+// until design_init or design_push in their design folder sends them with the folder's site. Prompts given outside any
+// design folder are kept the same day too, then go. Plain Node, no packages.
 import { appendFile, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative } from 'node:path';
 
@@ -42,7 +41,7 @@ async function waitingFiles(folder) {
   }
 }
 
-/** Keeps a prompt the hook can't send yet with its session and working folder; a day's old ones go first. */
+/** Keeps a prompt with its session and working folder until its design folder sends it; a day's old ones go first. */
 export async function keepPrompt({ session, prompt, cwd }) {
   const folder = waitingFolder();
   if (folder === undefined) {
@@ -97,7 +96,7 @@ export async function sendKeptPrompts(dir, send) {
         await send({ session: kept.session, prompt: kept.prompt });
         sent += 1;
       } catch {
-        // The prompt waits for the next push, as the hook's own sending leaves out one it couldn't send.
+        // The prompt waits for the next push.
         left.push(line);
       }
     }

@@ -1,6 +1,5 @@
-// A custom site's design as a folder of files, pulled from Website Studio and pushed back as the site's draft design:
-// what studio.mjs runs in a terminal and design-server.mjs offers Claude as tools. Plain Node, no packages, so it runs
-// wherever Claude Code does.
+// A custom site's design as a folder of files, pulled from Dezio and pushed back as the site's draft design: what
+// design-server.mjs offers Claude as tools. Plain Node, no packages, so it runs wherever Claude Code does.
 import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
@@ -8,7 +7,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 
 import { sendKeptPrompts } from './prompts.mjs';
-import { ONLINE } from './studio-addresses.mjs';
+import { adminOrigin, apiOrigin, signedFetch } from './sign-in.mjs';
 import { readWords, WORDS, writeWords } from './words.mjs';
 
 const FRAME = { header: 'header.html', footer: 'footer.html', stylesheet: 'stylesheet.css' };
@@ -32,7 +31,7 @@ function pointerWords(pointer) {
 /** A refusal from the Studio, with what it said, each thing it named by the file or the field its pointer leads to. */
 export class Refused extends Error {
   constructor(status, problem, placeOf = pointerWords) {
-    super(problem?.detail ?? problem?.title ?? `The Studio answered ${String(status)}.`);
+    super(problem?.detail ?? problem?.title ?? `Dezio answered ${String(status)}.`);
     this.problem = problem;
     this.placeOf = placeOf;
   }
@@ -54,29 +53,14 @@ export class Refused extends Error {
   }
 }
 
-/** The Studio and the agent key, from the environment: TF_STUDIO_KEY, TF_STUDIO_API and TF_STUDIO_ADMIN. */
-export function settings() {
-  const key = process.env.TF_STUDIO_KEY;
-  if (key === undefined || key === '') {
-    throw new Error(
-      'No Studio key: install the plugin with your agent key, or set TF_STUDIO_KEY to one made in the Studio.',
-    );
-  }
-  return { key, api: process.env.TF_STUDIO_API || ONLINE.api, admin: process.env.TF_STUDIO_ADMIN || ONLINE.admin };
-}
-
 /**
- * One request to the site's API with the agent key: its answer, a refusal thrown as `Refused`, which names each thing
- * by `placeOf` its pointer, where the call knows what the pointer leads into.
+ * One request to the site's API as the signed-in person: its answer, a refusal thrown as `Refused`, which names each
+ * thing by `placeOf` its pointer, where the call knows what the pointer leads into.
  */
 async function request(site, method, path, body, placeOf) {
-  const { key, api } = settings();
-  const response = await fetch(new URL(`/v1/sites/${encodeURIComponent(site)}/${path}`, api), {
+  const response = await signedFetch(new URL(`/v1/sites/${encodeURIComponent(site)}/${path}`, apiOrigin()), {
     method,
-    headers: {
-      authorization: `Bearer ${key}`,
-      ...(body === undefined ? {} : { 'content-type': 'application/json' }),
-    },
+    headers: body === undefined ? {} : { 'content-type': 'application/json' },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
   const answer = await response.json().catch(() => null);
@@ -86,14 +70,14 @@ async function request(site, method, path, body, placeOf) {
   return answer;
 }
 
-/** One call to the site's API with the agent key: a read's answer, or an action's output. */
+/** One call to the site's API as the signed-in person: a read's answer, or an action's output. */
 export async function call(site, method, path, body, placeOf) {
   const answer = await request(site, method, path, body, placeOf);
   if (method === 'GET') {
     return answer;
   }
   if (answer?.status !== 'done') {
-    throw new Error(`The Studio wants a person's ${String(answer?.status)} first; finish it in the Studio.`);
+    throw new Error(`Dezio wants a person's ${String(answer?.status)} first; finish it in Dezio.`);
   }
   return answer.output;
 }
@@ -254,9 +238,8 @@ async function writeDesign(dir, source) {
 
 /** One of the site's font files, as it was added. */
 async function fontBytes(site, hash) {
-  const { key, api } = settings();
-  const address = new URL(`/v1/sites/${encodeURIComponent(site)}/fonts/${hash}`, api);
-  const response = await fetch(address, { headers: { authorization: `Bearer ${key}` } });
+  const address = new URL(`/v1/sites/${encodeURIComponent(site)}/fonts/${hash}`, apiOrigin());
+  const response = await signedFetch(address, { headers: {} });
   if (!response.ok) {
     throw new Refused(response.status, await response.json().catch(() => null));
   }
@@ -289,7 +272,7 @@ export async function pull(dir) {
   if (pushed === false) {
     return (
       `Site ${site}'s design was never pushed, so nothing was pulled: write design/header.html, design/footer.html and ` +
-      'design/stylesheet.css, and the section types, then push. Until then the Studio shows a starter.'
+      'design/stylesheet.css, and the section types, then push. Until then Dezio shows a starter.'
     );
   }
   await writeDesign(dir, source);
@@ -297,15 +280,12 @@ export async function pull(dir) {
   return `Pulled the design of site ${site} into ${join(dir, 'design')}.`;
 }
 
-/**
- * The prompts given in the folder that waited for it to be linked, or for the key, sent to its site: a line saying how
- * many, where any were.
- */
+/** The prompts given in the folder since its last push, sent to its site: a line saying how many, where any were. */
 async function sentPrompts(dir, site) {
   const record = ({ session, prompt }) =>
     call(site, 'POST', 'template_sites/design_prompt:record', { session, prompt });
   const sent = await sendKeptPrompts(dir, record);
-  return sent === 0 ? [] : [`Kept ${String(sent)} prompt${sent === 1 ? '' : 's'} given before with the site.`];
+  return sent === 0 ? [] : [`Kept ${String(sent)} prompt${sent === 1 ? '' : 's'} given in the folder with the site.`];
 }
 
 /** Whether the folder's design/ holds any file of a design: a hidden one, such as Finder's .DS_Store, is none. */
@@ -382,7 +362,7 @@ export async function push(dir) {
     `Saved at ${new Date().toLocaleTimeString()}. Own section types: ${types}.`,
     // What the design may want to change, which never stopped the save.
     ...saved.suggestions.map(({ detail }) => `Suggestion: ${detail}`),
-    `Preview: ${new URL(`/sites/${encodeURIComponent(site)}/preview`, settings().admin).href}`,
+    `Preview: ${new URL(`/sites/${encodeURIComponent(site)}/preview`, await adminOrigin()).href}`,
     ...(await sentPrompts(dir, site)),
   ];
 }

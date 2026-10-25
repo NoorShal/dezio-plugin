@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-// The design folder as tools Claude calls: a small MCP server Claude Code starts from the plugin's .mcp.json with the
-// key given at install, so a design's files go from disk to the Studio without passing through Claude's context.
-// Newline-delimited JSON-RPC over stdin and stdout, as MCP's stdio transport, with its initialize handshake.
+// The design folder as tools Claude calls: a small MCP server Claude Code starts from the plugin's .mcp.json, signed in
+// to Dezio as the person, so a design's files go from disk to Dezio without passing through Claude's context.
+// Newline-delimited JSON-RPC over stdin and stdout, as MCP's stdio transport, with its initialize handshake; the
+// sign-in's link is shown through Claude Code by URL-mode elicitation (MCP 2025-11-25, "Elicitation").
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline';
@@ -9,6 +10,7 @@ import { createInterface } from 'node:readline';
 import { init, pull, push, Refused, siteOf } from './design-folder.mjs';
 import { MOST_SECONDS, waitForJob } from './jobs.mjs';
 import { describe, upload } from './pictures.mjs';
+import { signInWith } from './sign-in.mjs';
 
 /** The plugin's version, as its manifest gives it, so the server names the one it ships with. */
 const { version } = JSON.parse(readFileSync(new URL('../.claude-plugin/plugin.json', import.meta.url), 'utf8'));
@@ -49,7 +51,7 @@ const TOOLS = [
   {
     name: 'design_init',
     description:
-      'Starts a design folder for a Website Studio site: makes the site a custom site (safe to run again; its pages are written in the design’s own section types; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json, and pulls its design into design/ where one was pushed before. On a site whose design was never pushed nothing is pulled, so a new folder starts empty: write design/header.html, design/footer.html, design/stylesheet.css and the section types, then push; the Studio shows a starter until then. A folder holding another site’s design is refused: each site has a folder of its own. The prompts given in the folder before it was linked are kept with the site then.',
+      'Starts a design folder for a Dezio site: makes the site a custom site (safe to run again; its pages are written in the design’s own section types; legal pages are the client’s choice, added with template_sites-pages legal.add_pages), names it in the folder’s studio.json, and pulls its design into design/ where one was pushed before. On a site whose design was never pushed nothing is pulled, so a new folder starts empty: write design/header.html, design/footer.html, design/stylesheet.css and the section types, then push; Dezio shows a starter until then. A folder holding another site’s design is refused: each site has a folder of its own. The prompts given in the folder are kept with the site then, and at each push.',
     inputSchema: {
       type: 'object',
       properties: { site_id: { type: 'string', description: 'The site’s id.' }, folder: FOLDER },
@@ -80,7 +82,7 @@ const TOOLS = [
   {
     name: 'design_upload',
     description:
-      'Adds pictures from this computer to the site’s media library with the plugin’s own key, the logo among them: each by its path, absolute or within the folder, with its alt text, or decorative: true, and its credit where one is due. JPEG, PNG, WebP, AVIF or SVG, up to 30 at once. Answers each picture’s file id, which an image field’s value takes; a logo’s id goes to the business details’ logo (core-site-update, business_details.set).',
+      'Adds pictures from this computer to the site’s media library, the logo among them: each by its path, absolute or within the folder, with its alt text, or decorative: true, and its credit where one is due. JPEG, PNG, WebP, AVIF or SVG, up to 30 at once. Answers each picture’s file id, which an image field’s value takes; a logo’s id goes to the business details’ logo (core-site-update, business_details.set).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -132,7 +134,7 @@ const TOOLS = [
   {
     name: 'job_wait',
     description:
-      'Waits for a Website Studio job to end, such as a page look, pictures being made or a website being read: it looks at the job, waits on this computer as long as the Studio says before looking again, and answers once, with the job as it ended, or after two minutes with the job still running and how much longer such jobs usually take, to wait on with another call. Use it for every job instead of reading the job again and again.',
+      'Waits for a Dezio job to end, such as a page look, pictures being made or a website being read: it looks at the job, waits on this computer as long as Dezio says before looking again, and answers once, with the job as it ended, or after two minutes with the job still running and how much longer such jobs usually take, to wait on with another call. Use it for every job instead of reading the job again and again.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -184,15 +186,19 @@ async function called(params) {
   }
 }
 
+/** Whether Claude Code shows a link the person opens outside it, as the sign-in's is: what it said at initialize. */
+let showsLinks = false;
+
 /** The result of one request. */
 async function resultOf(method, params) {
   switch (method) {
     case 'initialize': {
+      showsLinks = params?.capabilities?.elicitation?.url !== undefined;
       const asked = params?.protocolVersion;
       return {
         protocolVersion: VERSIONS.includes(asked) ? asked : VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: 'website-studio-design-folder', version },
+        serverInfo: { name: 'dezio-design', version },
       };
     }
     case 'ping':
@@ -210,7 +216,57 @@ function send(message) {
   process.stdout.write(`${JSON.stringify({ jsonrpc: '2.0', ...message })}\n`);
 }
 
-/** One line from the client: a request is answered; a notification, such as the initialized one, needs none. */
+/** The requests this server sent Claude Code, by id, each waiting for its answer. */
+const asked = new Map();
+let lastAsked = 0;
+
+/** Asks Claude Code something, such as to show a link: its answer, or its error thrown. */
+function ask(method, params) {
+  lastAsked += 1;
+  const id = `design-folder-${String(lastAsked)}`;
+  send({ id, method, params });
+  return new Promise((resolve, reject) => asked.set(id, { resolve, reject }));
+}
+
+// The sign-in's link, shown by Claude Code, which asks the person before it opens it; once the browser came back, the
+// elicitation is reported done, so Claude Code needn't wait for it.
+signInWith({
+  show: async ({ elicitationId, url, message }) => {
+    if (!showsLinks) {
+      throw new Error(
+        'This Claude Code can’t show the link to sign in to Dezio: update it with `claude update`, then try again.',
+      );
+    }
+    const answer = await ask('elicitation/create', { mode: 'url', elicitationId, url, message });
+    if (answer?.action !== 'accept') {
+      throw new Error(
+        'The sign-in to Dezio wasn’t opened, so the design folder can’t reach Dezio. Try again to sign in.',
+      );
+    }
+  },
+  finished: (elicitationId) => {
+    send({ method: 'notifications/elicitation/complete', params: { elicitationId } });
+  },
+});
+
+/** An answer from Claude Code to one of this server's own requests. */
+function answered(message) {
+  const waiting = asked.get(message.id);
+  if (waiting === undefined) {
+    return;
+  }
+  asked.delete(message.id);
+  if (message.error !== undefined) {
+    waiting.reject(new Error(String(message.error.message ?? 'Claude Code refused the request.')));
+  } else {
+    waiting.resolve(message.result);
+  }
+}
+
+/**
+ * One line from the client: a request is answered; a notification, such as the initialized one, needs none; an answer
+ * to one of this server's own requests goes to the call waiting for it.
+ */
 async function handle(line) {
   if (line.trim() === '') {
     return;
@@ -223,6 +279,10 @@ async function handle(line) {
     return;
   }
   if (message.id === undefined || message.id === null) {
+    return;
+  }
+  if (message.method === undefined) {
+    answered(message);
     return;
   }
   try {

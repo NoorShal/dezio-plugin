@@ -1,7 +1,7 @@
 # The design folder
 
 A custom site's header, footer, stylesheet and section types, in a local folder pushed to the site's drafts and looked
-at in the Studio's preview. The site must be a custom site with a design folder (`SKILL.md`, step 1).
+at in Dezio's preview. The site must be a custom site with a design folder (`SKILL.md`, step 1).
 
 Contents: the folder's files; the working loop; a section type; bindings; words in each language; what markup may
 hold; the stylesheet, with the editor's canvas, what the platform draws around the design, the site's variables,
@@ -25,26 +25,23 @@ design/words/<language>.json the design's own fixed words in one of the site's l
 
 `design_init` names the site in the folder's `studio.json`, and pulls its design into `design/` where one was pushed
 before. On a site whose design was never pushed nothing is pulled, so a new folder starts empty: write
-`design/header.html`, `design/footer.html`, `design/stylesheet.css` and the section types, then push. The Studio shows a
+`design/header.html`, `design/footer.html`, `design/stylesheet.css` and the section types, then push. Dezio shows a
 starter until the first push. A folder that holds another site's design is refused: each site has a folder of its own.
 
 1. Edit the files, then call `design_push` with the folder's absolute path. It reads the files from disk and saves
    them as the site's draft design, answering the preview's address, or each refusal as
    `design/<file>:<line> what to change`.
 2. Fix every refusal and push again before going on: a refused push keeps the design saved before it.
-3. Write the pages with `content-write`, in the site's own section types and the platform's (`SKILL.md`, rule 5).
+3. Write the pages with `content-write`, in the site's own section types and the platform's (`SKILL.md`, rule 2).
 4. Look at the result at the preview's address `design_push` answers, reloaded after the push, as `SKILL.md` says
-   (rule 11). Nothing goes public until the site is published. Judge motion there or through a share link: the
-   Studio's editor runs no scripts, so it shows each section still.
-
-In a terminal, `node ${CLAUDE_PLUGIN_ROOT}/scripts/studio.mjs dev` in the folder pushes on every save instead; it reads
-the key from `TF_STUDIO_KEY`.
+   (rule 5). Nothing goes public until the site is published. Judge motion there or through a share link:
+   Dezio's editor runs no scripts, so it shows each section still.
 
 Every push that changes the design is kept as a version (`template_sites-read` with `design_version.list`), and
 `template_sites-custom` with `custom_design.roll_back` takes the design back to one. Someone else may have pushed or
 restored meanwhile: look at the list before a push that builds on an older state.
 
-To start from the design saved in the Studio, call `design_pull`; on a site whose design was never pushed it writes
+To start from the design saved in Dezio, call `design_pull`; on a site whose design was never pushed it writes
 nothing. A push sends the whole folder: a section type left out is removed, refused while a page still holds one.
 
 ## A section type
@@ -211,7 +208,7 @@ and styles `.button`, `.eyebrow`, `.card` and `.section-head`, so a property the
 keeps the base's: give the design's own classes a short prefix of the site's, such as `fh-`. It loads nothing but the
 design's own font files: no `@import`, `url(…)` outside a font face, `image-set(…)` or backslash escapes.
 
-The Studio's editor draws the same sections, without running any script and with each section wrapped in elements of
+Dezio's editor draws the same sections, without running any script and with each section wrapped in elements of
 its own, and no `<main>`. So:
 - never hide a section's content until it is in view (`opacity: 0` until `[data-in-view]`): the mark never comes in
   the editor, nor on a page read without scripts. Let the mark start a motion from content that stands whole without
@@ -247,8 +244,8 @@ The site's variables, all set by the design:
   `--site-text-h3`, `--site-text-body`;
 - shape: `--site-radius`, `--site-spacing`.
 
-The Studio checks contrast only for the `--site-*` colours a client changes in the Studio; the design's own colours
-pass no check of the Studio's, so measure each pair of words and ground the design draws.
+Dezio checks contrast only for the `--site-*` colours a client changes in Dezio; the design's own colours
+pass no check of Dezio's, so measure each pair of words and ground the design draws.
 
 **Fonts:** a font pair of the platform's (`template_sites-write`, `design.set` with `font_pair`), drawn with
 `var(--site-font-heading)` and `var(--site-font-body)`, or files of the design's own: any font under an open licence,
@@ -304,7 +301,7 @@ post's article), `post-head` (its head: the posts' name, the title, the teaser a
 `post-list-head` (its heading and lead), `post-list` (the cards), `post-card` (one post) and `post-pager` (newer and
 older). A design that styles none of them shows the posts in the base's plain look and the site's variables.
 
-The legal links and the consent bar stay visible and readable at every width (`SKILL.md`, rule 6): no check sees a
+The legal links and the consent bar stay visible and readable at every width (`SKILL.md`, rule 3): no check sees a
 stylesheet hide them, so never give them `display: none`, `visibility: hidden`, a size of nothing, a place off the
 screen or a colour too faint to read, and never cover them. Where the site asks for consent, the legal links hold
 "Cookie-Einstellungen", which opens the consent bar again: keep it with them.

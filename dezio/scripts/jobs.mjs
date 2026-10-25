@@ -1,4 +1,4 @@
-// Waiting on a Website Studio job from this computer: what design-server.mjs offers Claude as job_wait, so a job takes
+// Waiting on a Dezio job from this computer: what design-server.mjs offers Claude as job_wait, so a job takes
 // one call instead of one read after another, and nothing is held open in the Studio while it runs. Plain Node, no
 // packages.
 import { call } from './design-folder.mjs';
@@ -48,7 +48,9 @@ export async function waitForJob(site, jobId, seconds = MOST_SECONDS) {
     // A Studio older than job_wait says no time; waiting on its job would read it back to back.
     const wait = job.retry_after_seconds;
     if (!Number.isInteger(wait) || wait < 1) {
-      throw new Error('This Studio doesn’t say when to look at a job again; update it before waiting with job_wait.');
+      throw new Error(
+        'This version of Dezio doesn’t say when to look at a job again; update it before waiting with job_wait.',
+      );
     }
     await sleep(Math.min(wait * 1000, left));
   }

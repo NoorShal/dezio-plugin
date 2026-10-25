@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "dezio": {
+      "type": "http",
+      "url": "${TF_STUDIO_API:-https://api.heydezio.com}/mcp"
+    },
+    "dezio-design": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/scripts/design-server.mjs"],
+      "env": {
+        "TF_STUDIO_API": "${TF_STUDIO_API:-}"
+      }
+    }
+  }
+}

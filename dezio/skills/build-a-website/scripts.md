@@ -30,7 +30,7 @@ push's check.
   page is given to `attach` as `root`, once the page is read.
 - `attach` returns its undo: listeners added with an `AbortController`'s `signal`, and `() => controller.abort()`
   returned.
-- The page reads whole without it, as the editor shows it: the editor never runs the script; the Studio's preview, a
+- The page reads whole without it, as the editor shows it: the editor never runs the script; Dezio's preview, a
   share link and the published site do, so judge every motion there.
 - It shows a state with a `data-` mark of its own, `root.dataset.offen = 'ja'` styled as `[data-offen]`, and leaves
   the classes to the markup, so a class it would add never meets one of the design's own by the same name.

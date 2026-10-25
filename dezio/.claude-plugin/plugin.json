@@ -1,0 +1,8 @@
+{
+  "name": "dezio",
+  "version": "0.4.0",
+  "description": "Build custom websites on Dezio from Claude Code: its tools, its rules, and a design folder pushed to a site's drafts.",
+  "author": {
+    "name": "Trustfactory"
+  }
+}
